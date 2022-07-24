@@ -6,7 +6,7 @@ import {useEffect, useState} from "react";
 
 WebBrowser.maybeCompleteAuthSession()
 
-const App = () => {
+export default function App() {
 
     const [accessToken, setAccessToken] = useState()
     const [userInfo, setUserInfo] = useState()
