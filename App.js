@@ -3,10 +3,17 @@ import {Button, StyleSheet, Text, View} from 'react-native';
 import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser'
 import {useEffect, useState} from "react";
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import Login from "./components/Login";
+import AppNavigator from './components/AppNavigator'
+import routes from "./routes";
+
+const Stack = createNativeStackNavigator();
 
 WebBrowser.maybeCompleteAuthSession()
 
-export default function App() {
+const App = () => {
 
     const [accessToken, setAccessToken] = useState()
     const [userInfo, setUserInfo] = useState()
@@ -43,16 +50,24 @@ export default function App() {
         }
     }
 
+    // return (
+    //     <View style={styles.container}>
+    //         {showUserInfo()}
+    //         <Button onPress={accessToken ? getUserData : () => {
+    //             promptAsync({showInRecents: true})
+    //         }} title={accessToken ? "Get User Data" : "Login"}/>
+    //         <StatusBar style="auto"/>
+    //     </View>
+    // );
+
     return (
-        <View style={styles.container}>
-            {showUserInfo()}
-            <Button onPress={accessToken ? getUserData : () => {
-                promptAsync({showInRecents: true})
-            }} title={accessToken ? "Get User Data" : "Login"}/>
-            <StatusBar style="auto"/>
-        </View>
-    );
+        <NavigationContainer>
+            {accessToken ? <AppNavigator/> : <Login/>}
+        </NavigationContainer>
+    )
 }
+
+export default App;
 
 const styles = StyleSheet.create({
     container: {
