@@ -1,20 +1,45 @@
 import {Button, StatusBar, StyleSheet, Text, View} from 'react-native';
 import * as Google from 'expo-auth-session/providers/google';
 import {useEffect, useState} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as WebBrowser from 'expo-web-browser';
+
+const iosClientId = "382648074525-3bh0jsq03ut910i367er4djqp2fm0iok.apps.googleusercontent.com";
+const androidClientId = "382648074525-4ll05bhmc1od6ubeu4n4ri2omjhs88mj.apps.googleusercontent.com";
+const expoClientId = "382648074525-luus5lp62g7f13fjsq8h19poe2541ltr.apps.googleusercontent.com"
 
 const Login = () => {
     const [accessToken, setAccessToken] = useState()
     const [userInfo, setUserInfo] = useState()
 
     const [request, response, promptAsync] = Google.useAuthRequest({
-        iosClientId: "382648074525-3bh0jsq03ut910i367er4djqp2fm0iok.apps.googleusercontent.com",
-        androidClientId: "382648074525-4ll05bhmc1od6ubeu4n4ri2omjhs88mj.apps.googleusercontent.com",
-        expoClientId: "382648074525-luus5lp62g7f13fjsq8h19poe2541ltr.apps.googleusercontent.com"
-    })
+        iosClientId,
+        androidClientId,
+        expoClientId,
+        scopes:[
+
+        ]
+    });
+
+
+    // useEffect(() => {
+    //     setAccessToken(null);
+    // }, [])
+
 
     useEffect(() => {
         if (response?.type === 'success') {
-            setAccessToken(response.authentication.accessToken);
+            let innerAccessToken = response.authentication.accessToken;
+            setAccessToken(innerAccessToken);
+            const storeData = async (value) => {
+                try {
+                    await AsyncStorage.setItem('accessToken', value)
+                } catch (e) {
+                    // saving error
+                }
+            }
+
+            storeData(innerAccessToken);
         }
     }, [response])
 
@@ -25,7 +50,20 @@ const Login = () => {
             }
         })
 
-        userInfoResponse.json().then(data => setUserInfo(data))
+        userInfoResponse.json().then(data => {
+            console.log('userData', accessToken);
+            setUserInfo(data)
+        })
+    }
+
+    const logout = () => {
+        WebBrowser.dismissAuthSession();
+        console.log('logout');
+        // AuthSession.revokeAsync({
+        //     token: accessToken
+        // }).then(r => {
+        //     console.log(r);
+        // })
     }
 
     const showUserInfo = () => {
@@ -38,13 +76,24 @@ const Login = () => {
         }
     }
     return (
-            <View style={styles.container}>
-                {showUserInfo()}
-                <Button onPress={accessToken ? getUserData : () => {
-                    promptAsync({showInRecents: true})
-                }} title={accessToken ? "Get User Data" : "Login"}/>
-                <StatusBar style="auto"/>
-            </View>
+        <View style={styles.container}>
+            {showUserInfo()}
+            <Button onPress={accessToken ? getUserData : () => {
+                promptAsync({showInRecents: true})
+            }} title={accessToken ? "Get User Data" : "Login"}/>
+
+            <Button
+                title="Log out"
+                onPress={async () => {
+                    setUserInfo(null);
+                    setAccessToken(null);
+                    window.location.replace(
+                        `https://www.googleapis.com/v2/logout?client_id=${iosClientId}&returnTo=${'/'}`
+                    );
+                }}
+            />
+            <StatusBar style="auto"/>
+        </View>
     )
 }
 

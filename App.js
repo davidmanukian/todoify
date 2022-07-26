@@ -16,7 +16,8 @@ const App = () => {
 
     return (
         <NavigationContainer>
-            {accessToken ? <AppNavigator/> : <Login/>}
+            {/*{accessToken ? <AppNavigator/> : <Login/>}*/}
+            <AppNavigator/>
         </NavigationContainer>
     )
 }
