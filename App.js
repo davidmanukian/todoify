@@ -1,24 +1,16 @@
-import {StyleSheet} from 'react-native';
 import * as WebBrowser from 'expo-web-browser'
-import {useState} from "react";
-import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import Login from "./components/Login";
-import AppNavigator from './components/AppNavigator'
+import {AuthProvider} from "./hooks/auth";
+import Routes from "./routes/routes";
 
-const Stack = createNativeStackNavigator();
 
 WebBrowser.maybeCompleteAuthSession()
 
 const App = () => {
-
-    const [accessToken] = useState()
-
     return (
-        <NavigationContainer>
-            {accessToken ? <AppNavigator/> : <Login/>}
-        </NavigationContainer>
+        <AuthProvider>
+            <Routes/>
+        </AuthProvider>
     )
 }
 
-export default App;
+export default App
