@@ -51,7 +51,7 @@ const App = ({navigation}) => {
     /*{accessToken ? <AppNavigator/> :*/
 
     return (
-        <NavigationContainer>
+        <NavigationContainer>r
             {accessToken ? <AppNavigator/> : <Login/>}
             {/*<Stack.Screen  component={Login} name='Login'/>*/}
             {/*<Stack.Navigator>*/}

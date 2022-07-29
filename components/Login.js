@@ -3,25 +3,24 @@ import * as Google from 'expo-auth-session/providers/google';
 import {useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as WebBrowser from 'expo-web-browser';
+import {
+    ANDROID_CLIENT_ID,
+    EXPO_CLIENT_ID,
+    IOS_CLIENT_ID,
+    OAUTH_SCOPES
+} from '../config';
 
-const iosClientId = "382648074525-3bh0jsq03ut910i367er4djqp2fm0iok.apps.googleusercontent.com";
-const androidClientId = "382648074525-4ll05bhmc1od6ubeu4n4ri2omjhs88mj.apps.googleusercontent.com";
-const expoClientId = "382648074525-luus5lp62g7f13fjsq8h19poe2541ltr.apps.googleusercontent.com"
 
 const Login = () => {
     const [accessToken, setAccessToken] = useState()
     const [userInfo, setUserInfo] = useState()
 
     const [request, response, promptAsync] = Google.useAuthRequest({
-        iosClientId,
-        webClientId: expoClientId,
-        androidClientId,
-        expoClientId,
-        scopes: [
-            'https://www.googleapis.com/auth/userinfo.profile',
-            'https://www.googleapis.com/auth/userinfo.email',
-            'https://www.googleapis.com/auth/calendar.events',
-            'https://www.googleapis.com/auth/calendar']
+        iosClientId: IOS_CLIENT_ID,
+        webClientId: EXPO_CLIENT_ID,
+        androidClientId: ANDROID_CLIENT_ID,
+        expoClientId: EXPO_CLIENT_ID,
+        scopes: OAUTH_SCOPES
     });
 
 
