@@ -1,4 +1,4 @@
-import {Button, StatusBar, StyleSheet, Text, Alert, View} from 'react-native';
+import {Alert, Button, StyleSheet, Text, View} from 'react-native';
 import {useAuth} from "../hooks/auth";
 
 const Login = () => {
@@ -13,22 +13,6 @@ const Login = () => {
         }
     }
 
-        userInfoResponse.json().then(data => {
-            console.log('userData', accessToken);
-            setUserInfo(data)
-        })
-    }
-
-    const logout = () => {
-        WebBrowser.dismissAuthSession();
-        console.log('logout');
-        // AuthSession.revokeAsync({
-        //     token: accessToken
-        // }).then(r => {
-        //     console.log(r);
-        // })
-    }
-
     const showUserInfo = () => {
         if (userInfo) {
             return (
@@ -39,30 +23,17 @@ const Login = () => {
         }
     }
     return (
-        <View style={styles.container}>
-            <Button title="Sign In" onPress={doSignIn}/>
-            <StatusBar style="auto"/>
-        </View>
+        // <View style={styles.container}>
+        //     <Button title="Sign In" onPress={doSignIn}/>
+        //     <StatusBar style="auto"/>
+        // </View>
         <View style={styles.container}>
             {showUserInfo()}
-            <Button onPress={accessToken ? getUserData : () => {
-                promptAsync({showInRecents: true})
-            }} title={accessToken ? "Get User Data" : "Login"}/>
-
-            <Button
-                title="Log out"
-                onPress={async () => {
-                    setUserInfo(null);
-                    setAccessToken(null);
-                    window.location.replace(
-                        `https://www.googleapis.com/v2/logout?client_id=${iosClientId}&returnTo=${'/'}`
-                    );
-                }}
-            />
-            <StatusBar style="auto"/>
+            <Button title="Sign In" onPress={doSignIn}/>
         </View>
     )
 }
+
 
 const styles = StyleSheet.create({
     container: {
