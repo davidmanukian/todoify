@@ -1,8 +1,19 @@
-import {Text} from 'react-native';
+import {Button, Text} from 'react-native';
+import {useAuth} from "../hooks/auth";
 
 const Home = () => {
+    const {signOut} = useAuth()
+
+    const doSignOut = async () => {
+        try {
+            await signOut()
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
     return (
-        <Text>Home</Text>
+        <Button onPress={doSignOut} title="Sign Out"/>
     )
 }
 

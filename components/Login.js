@@ -1,54 +1,17 @@
-import {Button, StatusBar, StyleSheet, Text, View} from 'react-native';
-import * as Google from 'expo-auth-session/providers/google';
-import {useEffect, useState} from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as WebBrowser from 'expo-web-browser';
-
-const iosClientId = "382648074525-3bh0jsq03ut910i367er4djqp2fm0iok.apps.googleusercontent.com";
-const androidClientId = "382648074525-4ll05bhmc1od6ubeu4n4ri2omjhs88mj.apps.googleusercontent.com";
-const expoClientId = "382648074525-luus5lp62g7f13fjsq8h19poe2541ltr.apps.googleusercontent.com"
+import {Button, StatusBar, StyleSheet, Text, Alert, View} from 'react-native';
+import {useAuth} from "../hooks/auth";
 
 const Login = () => {
-    const [accessToken, setAccessToken] = useState()
-    const [userInfo, setUserInfo] = useState()
 
-    const [request, response, promptAsync] = Google.useAuthRequest({
-        iosClientId,
-        androidClientId,
-        expoClientId,
-        scopes:[
+    const {signIn} = useAuth()
 
-        ]
-    });
-
-
-    // useEffect(() => {
-    //     setAccessToken(null);
-    // }, [])
-
-
-    useEffect(() => {
-        if (response?.type === 'success') {
-            let innerAccessToken = response.authentication.accessToken;
-            setAccessToken(innerAccessToken);
-            const storeData = async (value) => {
-                try {
-                    await AsyncStorage.setItem('accessToken', value)
-                } catch (e) {
-                    // saving error
-                }
-            }
-
-            storeData(innerAccessToken);
+    const doSignIn = async () => {
+        try {
+            await signIn()
+        } catch (err) {
+            Alert.alert(err)
         }
-    }, [response])
-
-    async function getUserData() {
-        let userInfoResponse = await fetch("https://www.googleapis.com/userinfo/v2/me", {
-            headers: {
-                Authorization: `Bearer ${accessToken}`
-            }
-        })
+    }
 
         userInfoResponse.json().then(data => {
             console.log('userData', accessToken);
@@ -77,6 +40,10 @@ const Login = () => {
     }
     return (
         <View style={styles.container}>
+            <Button title="Sign In" onPress={doSignIn}/>
+            <StatusBar style="auto"/>
+        </View>
+        <View style={styles.container}>
             {showUserInfo()}
             <Button onPress={accessToken ? getUserData : () => {
                 promptAsync({showInRecents: true})
@@ -97,8 +64,6 @@ const Login = () => {
     )
 }
 
-export default Login
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -107,3 +72,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
 });
+
+
+export default Login
