@@ -1,4 +1,4 @@
-import {Button, StatusBar, StyleSheet, Text, Alert, View} from 'react-native';
+import {Alert, Button, StyleSheet, Text, View} from 'react-native';
 import {useAuth} from "../hooks/auth";
 
 const Login = () => {
