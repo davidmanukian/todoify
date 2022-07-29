@@ -1,6 +1,6 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import routes from "../routes";
+import routes from "../constant_routes";
 import Home from "./Home";
 import Settings from './Settings'
 import Calendar from "./Calendar";
