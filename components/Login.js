@@ -17,7 +17,11 @@ const Login = () => {
         webClientId: expoClientId,
         androidClientId,
         expoClientId,
-        scopes: ['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email']
+        scopes: [
+            'https://www.googleapis.com/auth/userinfo.profile',
+            'https://www.googleapis.com/auth/userinfo.email',
+            'https://www.googleapis.com/auth/calendar.events',
+            'https://www.googleapis.com/auth/calendar']
     });
 
 
@@ -80,14 +84,14 @@ const Login = () => {
             <Button onPress={accessToken ? getUserData : () => {
                 promptAsync({showInRecents: true})
             }} title={accessToken ? "Get User Data" : "Login"}/>
-
             <Button
                 title="Log out"
                 onPress={async () => {
                     setUserInfo(null);
                     setAccessToken(null);
+                    window.location = "https://mail.google.com/mail/u/0/?logout&hl=en";
                     window.location.replace(
-                        `https://www.googleapis.com/v2/logout?client_id=${iosClientId}&returnTo=${'/'}`
+                        // `https://www.googleapis.com/v2/logout?client_id=${iosClientId}&returnTo=${'/'}`
                     );
                 }}
             />

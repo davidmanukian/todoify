@@ -5,6 +5,8 @@ import {useEffect, useState} from 'react';
 
 const Calendar = ({navigation}) => {
     const [accessToken, setAccessToken] = useState();
+
+
     const config = {
         "clientId": "382648074525-3bh0jsq03ut910i367er4djqp2fm0iok.apps.googleusercontent.com",
         "apiKey": "AIzaSyBj-fHnlIw5LSBCk3yJrDKf-4grjW3leGE",
@@ -31,11 +33,6 @@ const Calendar = ({navigation}) => {
         getData().then(t => setAccessToken(t));
     }, [])
 
-
-    // const localAccessToken =  'ya29.A0AVA9y1thrXBYUTgUi0iT_mROrgeunUVOtiug1Oa_e2i6NoTKTO5t1bQDIjMArX_VZJWtyyP3Un_T775Atw-CtPTgd38puEUGLnZ2E5vy1znPdeJKgFP586MKhtf8kMsDBMbVLhVMa5M0781E7Z6HihtH4sXhYUNnWUtBVEFTQVRBU0ZRRTY1ZHI4dnNrd3FSWjZIZmRubHlNWWVQVWU4dw0163'
-    // const localAccessToken =  'ya29.A0AVA9y1ti48xvfl2_91LMgtQzB97u67iMjzI5RcCr9bFVKaZ0q9Ue2En-l7_jR1MU5PxmvN0iXzWLqzCLp5JZh3wicrwBijVvElMGRT7Z8v5kfYUZDKElpnYfZV8MNp4sUO1IwibR3sJ-Omn2aMqgrnzY0tI68YKmMjSV-fsYUNnWUtBVEFTQVRBU0ZRRTY1ZHI4X2ZlbUVUUXBwQWRfTHJFQk42NFhOZw0174'
-    // getData().
-
     const storeData = async (value) => {
         try {
             await AsyncStorage.removeItem('accessToken')
@@ -43,20 +40,6 @@ const Calendar = ({navigation}) => {
             console.log('saving error', e);
             // saving error
         }
-    }
-
-    const getUsersCalendarList = async () => {
-        let calendarsList = await fetch('https://www.googleapis.com/calenda/v3/users/me/calendarList', {
-            headers: {Authorization: `Bearer ${accessToken}`},
-            mode: 'no-cors'
-        })
-            .then(data => {
-                console.log('data', data);
-                return data.json()
-            })
-            .then(json => console.log('json', json))
-        // console.log('calendarsList', calendarsList);
-        // return calendarsList.json();
     }
 
     const getEvents = () => {

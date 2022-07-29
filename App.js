@@ -28,8 +28,9 @@ const App = ({navigation}) => {
     useEffect(() => {
         getData().then(t => {
             setAccessToken(t);
+            console.log('set Token - ', t);
             if (t) {
-                navigation.navigate('Home', {name: 'Home'})
+                // navigation.navigate('Home', {name: 'Home'})
             }
         });
     }, [])
@@ -51,10 +52,12 @@ const App = ({navigation}) => {
 
     return (
         <NavigationContainer>
-            <Stack.Navigator>
-                <AppNavigator/>
-                {/*<Stack.Screen  component={Login} name='Login'/>*/}
-            </Stack.Navigator>}
+            {accessToken ? <AppNavigator/> : <Login/>}
+            {/*<Stack.Screen  component={Login} name='Login'/>*/}
+            {/*<Stack.Navigator>*/}
+            {/*    <AppNavigator/>*/}
+            {/*    <Stack.Screen  component={Login} name='Login'/>*/}
+            {/*</Stack.Navigator>}*/}
         </NavigationContainer>
     )
 }
