@@ -1,6 +1,7 @@
 import React, {createContext, useContext, useEffect, useState} from 'react'
 import * as Google from "expo-auth-session/providers/google";
 import auth_creds from "../constant_auth"
+import * as WebBrowser from "expo-web-browser";
 
 export const AuthContext = createContext({})
 
@@ -18,7 +19,6 @@ const AuthProvider = ({children}) => {
 
     useEffect(() => {
         if (response?.type === 'success') {
-            console.log(response.authentication.accessToken)
             setAccessToken(response.authentication.accessToken);
         }
     }, [response])
@@ -33,6 +33,7 @@ const AuthProvider = ({children}) => {
 
     const signOut = async () => {
         setAccessToken(null)
+        WebBrowser.dismissAuthSession();
     }
 
     return (

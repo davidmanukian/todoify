@@ -13,22 +13,8 @@ const Login = () => {
         }
     }
 
-    const showUserInfo = () => {
-        if (userInfo) {
-            return (
-                <View>
-                    <Text>Welcome {userInfo.name}</Text>
-                </View>
-            )
-        }
-    }
     return (
-        // <View style={styles.container}>
-        //     <Button title="Sign In" onPress={doSignIn}/>
-        //     <StatusBar style="auto"/>
-        // </View>
         <View style={styles.container}>
-            {showUserInfo()}
             <Button title="Sign In" onPress={doSignIn}/>
         </View>
     )
