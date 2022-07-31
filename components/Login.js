@@ -16,6 +16,7 @@ const Login = () => {
     return (
         <View style={styles.container}>
             <Button title="Sign In" onPress={doSignIn}/>
+            <StatusBar style="auto"/>
         </View>
     )
 }
