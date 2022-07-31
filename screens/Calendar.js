@@ -1,5 +1,6 @@
-import {Button} from 'react-native';
+import {Button, StyleSheet, View} from 'react-native';
 import {useAuth} from "../hooks/auth";
+import app_constants from "../app_constants";
 
 const Calendar = () => {
     const {accessToken} = useAuth();
@@ -14,10 +15,20 @@ const Calendar = () => {
 
 
     return (
-        <Button onPress={() => getEvents()} title="Get events">
-        </Button>
+        <View style={[styles.container]}>
+            <Button onPress={() => getEvents()} title="Get events">
+            </Button>
+        </View>
     )
 }
 
+const styles = StyleSheet.create({
+    container: {
+        paddingTop: app_constants.STATUS_BAR_HEIGHT,
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    }
+})
 
 export default Calendar

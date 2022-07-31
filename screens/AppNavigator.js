@@ -21,12 +21,7 @@ const AppNavigator = () => {
                         options={{
                             tabBarIcon: ({color, size}) => (
                                 <MaterialCommunityIcons name="home" color={color} size={size}/>
-                            ),
-                            tabBarActiveBackgroundColor: "transparent",
-                            style: {
-                                backgroundColor: "transparent",
-                                elevation: 0
-                            }
+                            )
                         }}
             />
             <Tab.Screen name={routes.CALENDAR}
