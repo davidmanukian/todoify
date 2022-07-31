@@ -1,10 +1,10 @@
 import Modal from "react-native-modal";
 import {View} from "react-native";
 
-const Modal = (props) => {
-
+const TodoModal = (props) => {
+    const modalHeight = props.modalHeight
     return (
-        <Modal isVisible={props.listModalVisible}
+        <Modal isVisible={props.isVisible}
                customBackdrop={
                    <View style={{
                        marginTop: modalHeight,
@@ -16,10 +16,11 @@ const Modal = (props) => {
                    }
                    }/>
                }
-               backdropOpacity={1}
-               statusBarTranslucent
-               onBackdropPress={() => setListModalVisible(false)}>>
-
+               backdropOpacity={props.backdropOpacity}
+               onBackdropPress={props.onBackdropPress}>
+            {props.children}
         </Modal>
     )
 }
+
+export default TodoModal

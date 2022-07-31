@@ -18,8 +18,9 @@ import FontAwesome5 from "@expo/vector-icons/FontAwesome";
 import app_constants from "../app_constants";
 import {useState} from "react";
 import {Entypo, Feather, Ionicons} from "@expo/vector-icons";
-import Modal from "react-native-modal";
-import {Badge} from "react-native-paper";
+import TodoBadge from "../ui/badge";
+import HomeListModal from "../components/home/HomeListModal";
+import HomeCalendarModal from "../components/home/HomeCalendarModal";
 
 const {
     width: SCREEN_WIDTH,
@@ -27,6 +28,7 @@ const {
 } = Dimensions.get('window');
 
 const modalHeight = SCREEN_HEIGHT * 10 / 100
+const calendarModalHeight = SCREEN_HEIGHT * 70 / 100;
 
 const addATaskWidth = SCREEN_WIDTH - 30;
 
@@ -128,32 +130,16 @@ const Home = () => {
                         <View style={[{flexDirection: "row", flex: 1, paddingHorizontal: 20, alignItems: "center"}]}>
                             <TouchableOpacity onPress={openList}>
                                 {listValue ?
-                                    <Badge size={30} style={{}}>
-                                        <View style={{
-                                            flexDirection: "row",
-                                            flex: 1,
-                                            alignItems: "center",
-                                        }}>
-                                            <Text style={{
-                                                marginLeft: 20,
-                                                fontWeight: "bold",
-                                                marginTop:2,
-                                                color: "white"
-                                            }}>{listValue}</Text>
-                                            <FontAwesome5.Button size={15}
-                                                                 backgroundColor="transparent"
-                                                                 iconStyle={{
-                                                                     margin: 0,
-                                                                     paddingRight: 0,
-                                                                     paddingLeft: 0
-                                                                 }}
-                                                                 style={{margin: 0, paddingRight: 0}}
-                                                                 borderRadius={0}
-                                                                 name={"close"}
-                                                                 onPress={() => setListValue(null)}
-                                            />
-                                        </View>
-                                    </Badge>
+                                    <TodoBadge badgeSize={30}
+                                               data={listValue}
+                                               buttonSize={15}
+                                               buttonBackgroundColor="transparent"
+                                               buttonBorderRadius={0}
+                                               buttonIconName="close"
+                                               buttonOnPress={() => setListValue(null)}
+                                    >
+
+                                    </TodoBadge>
                                     :
                                     <Feather name="list" size={20} color="gray"/>}
                             </TouchableOpacity>
@@ -178,47 +164,19 @@ const Home = () => {
                     <Button color={"white"} backgroundColor={"transparent"} onPress={addATask} title={"Done"}/>
                 </View>
             }
-            <Modal isVisible={listModalVisible}
-                   customBackdrop={
-                       <View style={{
-                           marginTop: modalHeight,
-                           flex: 1,
-                           flexDirection: "column",
-                           backgroundColor: "white",
-                           borderTopRightRadius: 15,
-                           borderTopLeftRadius: 15
-                       }
-                       }/>
-                   }
-                   backdropOpacity={1}
-                   statusBarTranslucent
-                   onBackdropPress={() => setListModalVisible(false)}>
-                <View style={{
-                    flexDirection: "column",
-                    flex: 1,
-                    flexWrap: "wrap",
-                    justifyContent: "space-between",
-                    paddingTop: modalHeight
-                }}>
-                    <View
-                        style={{flexDirection: "row", alignItems: "center"}}>
-                        <Button color={"black"}
-                                title={"Cancel"}
-                                onPress={() => setListModalVisible(false)}/>
-                        <Text style={{fontSize: 18, alignItems: "center", marginLeft: "20%", fontWeight: "bold"}}>Select
-                            a List</Text>
-                    </View>
-                    <View style={{flexDirection: "column", flex: 1, marginTop: 15}}>
-                        {sections.map((value, i) => {
-                            return <TouchableOpacity key={value} onPress={() => addList(value)}>
-                                <Text style={{fontSize: 16}} key={value}>
-                                    {value}
-                                </Text>
-                            </TouchableOpacity>
-                        })}
-                    </View>
-                </View>
-            </Modal>
+
+            <HomeListModal isVisible={listModalVisible}
+                           modalHeight={modalHeight}
+                           onBackdropPress={() => setListModalVisible(false)}
+                           cancelButton={() => setListModalVisible(false)}
+                           sections={sections}
+                           addList={(e) => addList(e)}
+            />
+
+            <HomeCalendarModal isVisible={calendarModalVisible}
+                               modalHeight={calendarModalHeight}
+                               onBackdropPress={() => setCalendarModalVisible(false)}
+            />
         </ImageBackground>
     )
 }
