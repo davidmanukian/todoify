@@ -1,7 +1,9 @@
 import React, {createContext, useContext, useEffect, useState} from 'react'
 import * as Google from "expo-auth-session/providers/google";
-import auth_creds from "../constant_auth"
+import auth_creds from "../constant_auth";
 import * as WebBrowser from "expo-web-browser";
+import {getItem, removeItem, storeItem} from '../helpers/storage.helper';
+import {AUTH_TOKEN} from '../helpers/constant_storage';
 
 export const AuthContext = createContext({})
 
@@ -19,9 +21,17 @@ const AuthProvider = ({children}) => {
 
     useEffect(() => {
         if (response?.type === 'success') {
-            setAccessToken(response.authentication.accessToken);
+            let innerAccessTOken = response.authentication.accessToken;
+            setAccessToken(innerAccessTOken);
+            console.log('innerAccessTOken', innerAccessTOken);
+            storeItem(AUTH_TOKEN, innerAccessTOken);
+            getItem(AUTH_TOKEN).subscribe(data => console.log(data))
         }
     }, [response])
+
+    useEffect(() => {
+        getItem(AUTH_TOKEN).subscribe(t => setAccessToken(t));
+    }, [])
 
     const signIn = async () => {
         try {
@@ -32,9 +42,14 @@ const AuthProvider = ({children}) => {
     }
 
     const signOut = async () => {
-        setAccessToken(null)
+        setAccessToken(null);
+        removeItem(AUTH_TOKEN);
         WebBrowser.dismissAuthSession();
     }
+
+    useEffect(() => {
+        getItem(AUTH_TOKEN).subscribe(t => console.log('getData', t))
+    }, [])
 
     return (
         <AuthContext.Provider
