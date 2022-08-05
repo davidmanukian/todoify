@@ -5,11 +5,11 @@ import * as WebBrowser from "expo-web-browser";
 import {getItem, removeItem, storeItem} from '../helpers/storage.helper';
 import {AUTH_TOKEN} from '../helpers/constant_storage';
 
-export const AuthContext = createContext({})
+export const AuthContext = createContext({});
 
 
 const AuthProvider = ({children}) => {
-    const [accessToken, setAccessToken] = useState()
+    const [accessToken, setAccessToken] = useState();
 
     const [request, response, promptAsync] = Google.useAuthRequest({
         iosClientId: auth_creds.IOS_CLIENT_ID,
@@ -17,21 +17,20 @@ const AuthProvider = ({children}) => {
         androidClientId: auth_creds.ANDROID_CLIENT_ID,
         webClientId: auth_creds.WEB_CLIENT,
         scopes: auth_creds.SCOPES
-    })
+    });
 
     useEffect(() => {
         if (response?.type === 'success') {
             let innerAccessTOken = response.authentication.accessToken;
             setAccessToken(innerAccessTOken);
-            console.log('innerAccessTOken', innerAccessTOken);
             storeItem(AUTH_TOKEN, innerAccessTOken);
             getItem(AUTH_TOKEN).subscribe(data => console.log(data))
         }
-    }, [response])
+    }, [response]);
 
     useEffect(() => {
         getItem(AUTH_TOKEN).subscribe(t => setAccessToken(t));
-    }, [])
+    }, []);
 
     const signIn = async () => {
         try {
@@ -48,8 +47,8 @@ const AuthProvider = ({children}) => {
     }
 
     useEffect(() => {
-        getItem(AUTH_TOKEN).subscribe(t => console.log('getData', t))
-    }, [])
+        getItem(AUTH_TOKEN).subscribe();
+    }, []);
 
     return (
         <AuthContext.Provider
@@ -61,11 +60,11 @@ const AuthProvider = ({children}) => {
         >
             {children}
         </AuthContext.Provider>
-    )
+    );
 }
 
 const useAuth = () => {
-    return useContext(AuthContext)
+    return useContext(AuthContext);
 }
 
 export {
