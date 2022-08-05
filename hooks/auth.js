@@ -2,14 +2,15 @@ import React, {createContext, useContext, useEffect, useState} from 'react'
 import * as Google from "expo-auth-session/providers/google";
 import auth_creds from "../constant_auth";
 import * as WebBrowser from "expo-web-browser";
-import {getItem, removeItem, storeItem} from '../helpers/storage.helper';
 import {AUTH_TOKEN} from '../helpers/constant_storage';
+import {useStorage} from './storage';
 
 export const AuthContext = createContext({});
 
 
 const AuthProvider = ({children}) => {
     const [accessToken, setAccessToken] = useState();
+    const {getItem, removeItem, storeItem} = useStorage();
 
     const [request, response, promptAsync] = Google.useAuthRequest({
         iosClientId: auth_creds.IOS_CLIENT_ID,
