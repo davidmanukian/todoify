@@ -6,6 +6,7 @@ import Settings from './Settings'
 import Calendar from "./Calendar";
 import Constants from 'expo-constants';
 import {StyleSheet,} from "react-native";
+import {CalendarProvider} from '../hooks/calendar';
 
 const Tab = createBottomTabNavigator();
 
@@ -20,23 +21,31 @@ const AppNavigator = () => {
                         component={Home}
                         options={{
                             tabBarIcon: ({color, size}) => (
-                                <MaterialCommunityIcons name="home" color={color} size={size}/>
-                            )
-                        }}
-            />
-            <Tab.Screen name={routes.CALENDAR}
-                        component={Calendar}
-                        options={{
-                            tabBarIcon: ({color, size}) => (
-                                <MaterialCommunityIcons name="calendar" color={color} size={size}/>
+                                <MaterialCommunityIcons name="home"
+                                                        color={color}
+                                                        size={size}/>
                             ),
                         }}
             />
+            {/*<CalendarProvider>*/}
+                <Tab.Screen name={routes.CALENDAR}
+                            component={Calendar}
+                            options={{
+                                tabBarIcon: ({color, size}) => (
+                                    <MaterialCommunityIcons name="calendar"
+                                                            color={color}
+                                                            size={size}/>
+                                ),
+                            }}
+                />
+            {/*</CalendarProvider>*/}
+
             <Tab.Screen name={routes.SETTINGS}
                         component={Settings}
                         options={{
                             tabBarIcon: ({color, size}) => (
-                                <MaterialCommunityIcons name="cog" color={color} size={size}/>
+                                <MaterialCommunityIcons name="cog" color={color}
+                                                        size={size}/>
                             ),
                         }}
             />

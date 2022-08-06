@@ -1,9 +1,15 @@
-import {Button, Text} from 'react-native';
+import {Button} from 'react-native';
+import {useAuth} from '../hooks/auth';
 
 const Settings = () => {
+    const {signOut} = useAuth()
+
 
     return (
-        <Text>Settings</Text>
+        <Button
+            title="Log out"
+            onPress={() => signOut()}
+        />
     )
 }
 
