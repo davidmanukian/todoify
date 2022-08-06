@@ -1,5 +1,6 @@
 import {Alert, Button, StyleSheet, Text, View} from 'react-native';
 import {useAuth} from "../hooks/auth";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome";
 
 const Login = () => {
 
@@ -15,7 +16,9 @@ const Login = () => {
 
     return (
         <View style={styles.container}>
-            <Button title="Sign In" onPress={doSignIn}/>
+            <FontAwesome5.Button name="google" onPress={doSignIn}>
+                Sign in with Google
+            </FontAwesome5.Button>
         </View>
     )
 }
