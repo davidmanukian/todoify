@@ -9,6 +9,7 @@ import {useCalendar} from '../hooks/calendar';
 
 
 const TEST_ID = 'test-calendar'
+import app_constants from "../app_constants";
 
 const Calendar = () => {
     const {getEvents} = useCalendar()
@@ -111,6 +112,7 @@ const styles = StyleSheet.create({
     },
     container: {
         position: 'static',
+        paddingTop: app_constants.STATUS_BAR_HEIGHT,
         flex: 1,
         backgroundColor: '#E8EAED',
     },

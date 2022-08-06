@@ -4,13 +4,19 @@ import routes from "../constant_routes";
 import Home from "./Home";
 import Settings from './Settings'
 import Calendar from "./Calendar";
+import Constants from 'expo-constants';
+import {StyleSheet,} from "react-native";
 import {CalendarProvider} from '../hooks/calendar';
 
 const Tab = createBottomTabNavigator();
 
+const paddingTop = Constants.statusBarHeight
+
 const AppNavigator = () => {
     return (
-        <Tab.Navigator>
+        <Tab.Navigator style={[]}
+                       screenOptions={{headerShown: false}}
+        >
             <Tab.Screen name={routes.HOME}
                         component={Home}
                         options={{
@@ -46,5 +52,7 @@ const AppNavigator = () => {
         </Tab.Navigator>
     )
 }
+
+const styles = StyleSheet.create({});
 
 export default AppNavigator
