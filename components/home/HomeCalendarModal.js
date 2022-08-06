@@ -1,12 +1,18 @@
 import TodoModal from "../../ui/modal";
-import {Text, View} from "react-native";
+import {Text, TouchableOpacity, View} from "react-native";
 import {AntDesign, MaterialCommunityIcons} from "@expo/vector-icons";
+import {useState} from "react";
+import {DatePicker} from 'react-native-woodpicker'
 
 
 const HomeCalendarModal = (props) => {
-    const today = new Date()
-    const tomorrow = new Date(today)
-    tomorrow.setDate(tomorrow.getDate() + 1)
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const openDatePicker = () => {
+        props.datePickerRef.current.open()
+    }
 
     return (
         <TodoModal isVisible={props.isVisible}
@@ -14,6 +20,7 @@ const HomeCalendarModal = (props) => {
                    backdropOpacity={1}
                    onBackdropPress={props.onBackdropPress}
         >
+
             <View style={{
                 flexDirection: "column",
                 flex: 1,
@@ -28,68 +35,79 @@ const HomeCalendarModal = (props) => {
                         Due
                     </Text>
                 </View>
-                <View style={{
+                <TouchableOpacity style={{
                     flexDirection: "row",
                     marginTop: 15,
                     justifyContent: "space-between"
-                }}>
+                }} onPress={() => props.addDueDate("Today")}>
                     <View style={{
                         flexDirection: "row",
-                        flex:1
+                        flex: 1
                     }}>
-                        <MaterialCommunityIcons name="calendar" size={24} color="black" />
+                        <MaterialCommunityIcons name="calendar" size={24} color="black"/>
                         <Text style={{fontSize: 20}}>
                             Today
                         </Text>
                     </View>
                     <View>
                         <Text>
-                            {today.toLocaleString('en-us', {  weekday: 'short' })}
+                            {today.toLocaleString('en-us', {weekday: 'short'})}
                         </Text>
                     </View>
-                </View>
+                </TouchableOpacity>
 
-                <View style={{
-                    flexDirection: "row",
-                    marginTop: 15,
-                    justifyContent: "space-between"
-                }}>
+                <TouchableOpacity
+                    style={{
+                        flexDirection: "row",
+                        marginTop: 15,
+                        justifyContent: "space-between"
+                    }}
+                    onPress={() => props.addDueDate("Tomorrow")}>
                     <View style={{
                         flexDirection: "row",
-                        flex:1
+                        flex: 1
                     }}>
-                        <MaterialCommunityIcons name="calendar-arrow-right" size={24} color="black" />
+                        <MaterialCommunityIcons name="calendar-arrow-right" size={24} color="black"/>
                         <Text style={{fontSize: 20}}>
                             Tomorrow
                         </Text>
                     </View>
                     <View>
                         <Text>
-                            {tomorrow.toLocaleString('en-us', {  weekday: 'short' })}
+                            {tomorrow.toLocaleString('en-us', {weekday: 'short'})}
                         </Text>
                     </View>
-                </View>
+                </TouchableOpacity>
 
-                <View style={{
+                <TouchableOpacity style={{
                     flexDirection: "row",
                     marginTop: 15,
                     justifyContent: "space-between"
-                }}>
+                }}
+                                  onPress={openDatePicker}
+                >
                     <View style={{
                         flexDirection: "row",
-                        flex:1
+                        flex: 1
                     }}>
-                        <MaterialCommunityIcons name="calendar-blank" size={24} color="black" />
+                        <MaterialCommunityIcons name="calendar-blank" size={24} color="black"/>
                         <Text style={{fontSize: 20}}>
                             Pick a Date
                         </Text>
                     </View>
                     <View>
-                        <AntDesign name="right" size={24} color="black" />
+                        <AntDesign name="right" size={24} color="black"/>
                     </View>
-                </View>
+                    <DatePicker
+                        ref={props.datePickerRef}
+                        value={props.datePickerValue}
+                        onDateChange={(e) => props.addDueDate(e)}
+                        title="Select Due Date"
+                        isNullable={false}
+                        iosDisplay="inline"
+                    />
+                </TouchableOpacity>
             </View>
-
         </TodoModal>
     )
 }

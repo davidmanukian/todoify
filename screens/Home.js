@@ -16,11 +16,13 @@ import {
 import {useAuth} from "../hooks/auth";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome";
 import app_constants from "../app_constants";
-import {useState} from "react";
+import {useRef, useState} from "react";
 import {Entypo, Feather, Ionicons} from "@expo/vector-icons";
 import TodoBadge from "../ui/badge";
 import HomeListModal from "../components/home/HomeListModal";
 import HomeCalendarModal from "../components/home/HomeCalendarModal";
+import DatePicker from "react-native-date-picker";
+import {Picker} from 'react-native-woodpicker'
 
 const {
     width: SCREEN_WIDTH,
@@ -45,10 +47,18 @@ const Home = () => {
     const {signOut} = useAuth()
 
     const [addATaskPressed, setAddATaskPressed] = useState(false)
+
     const [taskValue, setTaskValue] = useState(null)
     const [listValue, setListValue] = useState(null)
+    const [dueDateValue, setDueDateValue] = useState(null);
+
     const [listModalVisible, setListModalVisible] = useState(false)
     const [calendarModalVisible, setCalendarModalVisible] = useState(false)
+
+    const [datePickerOpened, setDatePickerOpened] = useState(false);
+    const [datePickerValue, setDatePickerValue] = useState(new Date());
+
+    const datePickerRef = useRef(null);
 
     const doSignOut = async () => {
         try {
@@ -72,9 +82,16 @@ const Home = () => {
     }
 
     const addList = (value) => {
-        console.log(value)
+        console.log(value);
         setListValue(value)
         setListModalVisible(false)
+    }
+
+    const addDueDate = (value) => {
+        console.log(value);
+        setDatePickerValue(value)
+        setDueDateValue(value)
+        setCalendarModalVisible(false)
     }
 
     const openList = () => {
@@ -83,6 +100,18 @@ const Home = () => {
 
     const openCalendar = () => {
         setCalendarModalVisible(true)
+    }
+
+    const dueDateFormatted = () => {
+        if (typeof datePickerValue === 'string') {
+            return datePickerValue
+        }
+        const weekday = datePickerValue.toLocaleString('en-us', {weekday: 'short'})
+        const day = datePickerValue.toLocaleString('en-us', {day: "2-digit"})
+        const month = datePickerValue.toLocaleString('en-us', {month: 'short'})
+
+        return `${weekday}, ${day} ${month}`
+
     }
 
     const sections = ["Section 1", "Section 2", "Section 3"]
@@ -144,7 +173,21 @@ const Home = () => {
                                     <Feather name="list" size={20} color="gray"/>}
                             </TouchableOpacity>
                             <TouchableOpacity style={[{marginLeft: 20}]} onPress={openCalendar}>
-                                <FontAwesome5 name="calendar" size={20} color="gray"/>
+                                {datePickerValue ?
+                                    <TodoBadge badgeSize={30}
+                                               data={dueDateFormatted()}
+                                               buttonSize={15}
+                                               buttonBackgroundColor="transparent"
+                                               buttonBorderRadius={0}
+                                               buttonIconName="close"
+                                               buttonOnPress={() => setDatePickerValue(null)}
+                                    >
+
+                                    </TodoBadge>
+                                    :
+                                    <FontAwesome5 name="calendar" size={20} color="gray"/>
+                                }
+                                {/*<FontAwesome5 name="calendar" size={20} color="gray"/>*/}
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -176,7 +219,15 @@ const Home = () => {
             <HomeCalendarModal isVisible={calendarModalVisible}
                                modalHeight={calendarModalHeight}
                                onBackdropPress={() => setCalendarModalVisible(false)}
+                               addDueDate={(e) => addDueDate(e)}
+                               setDatePickerOpened={(e) => setDatePickerOpened(e)}
+                               datePickerOpened={datePickerOpened}
+                               setDatePickerValue={(e) => setDatePickerOpened(e)}
+                               datePickerValue={datePickerValue}
+                               datePickerRef={datePickerRef}
+
             />
+
         </ImageBackground>
     )
 }
