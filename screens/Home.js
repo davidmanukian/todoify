@@ -17,13 +17,13 @@ import {useAuth} from "../hooks/auth";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome";
 import app_constants from "../app_constants";
 import {useEffect, useRef, useState} from "react";
-import {AntDesign, Entypo, Feather, Ionicons} from "@expo/vector-icons";
+import {Entypo, Feather} from "@expo/vector-icons";
 import TodoBadge from "../ui/badge";
 import HomeListModal from "../components/home/HomeListModal";
 import HomeCalendarModal from "../components/home/HomeCalendarModal";
 import {COLLECTION_TASKS} from '../constant_storage';
 import {useStorage} from '../hooks/storage';
-import {groupBy, chain, map} from "lodash";
+import {groupBy, map} from "lodash";
 // import rxjs, {from, groupBy, map, mergeMap, of, reduce, tap, toArray, zip} from "rxjs";
 
 const {

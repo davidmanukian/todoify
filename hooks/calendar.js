@@ -2,6 +2,7 @@ import React, {createContext, useContext} from 'react'
 import {from, map, of, switchMap, tap} from 'rxjs';
 import dayjs from 'dayjs';
 import {useAuth} from './auth';
+import calendarHelper from "../helpers/constant_calendar";
 
 export const CalendarContext = createContext({});
 
@@ -13,14 +14,42 @@ const CalendarProvider = ({children}) => {
         return {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-JavaScript-User-Agent': 'Google APIs Explorer'
             }
         }
     }
 
-    const createEvent = async () => {
+    const createEvent = () => {
         try {
+            const event = {
+                summary: 'Google I/O 2022',
+                location: '800 Howard St., San Francisco, CA 94103',
+                description: 'A chance to hear more about Google\'s developer products.',
+                start: {
+                    'dateTime': '2022-08-26T09:00:00-07:00'
+                },
+                end: {
+                    'dateTime': '2022-08-26T17:00:00-07:00'
+                },
+            };
+
+            let init = {
+                ...{
+                    body: event,
+                    method: 'POST',
+                }, ...getHeaders()
+            };
+            console.log(init);
+            return from(fetch(calendarHelper.create_url('David-todo'), init)
+            ).pipe(
+                switchMap(e => {
+                    return e.ok ? from(e.json()) : of(signOut())
+                }),
+            );
         } catch (err) {
             console.log(err)
+            return of(err)
         }
     }
 
@@ -28,7 +57,13 @@ const CalendarProvider = ({children}) => {
     }
 
     const getEvents = () => {
-        return from(fetch(`https://www.googleapis.com/calendar/v3/calendars/primary/events`, getHeaders())).pipe(
+        return from(fetch(`https://www.googleapis.com/calendar/v3/calendars/primary/events`,
+            {
+                ...{
+                    method: 'GET',
+                }, ...getHeaders()
+            }
+        )).pipe(
             switchMap(e => {
                 return e.ok ? from(e.json()).pipe(
                     map(res => res.items),
