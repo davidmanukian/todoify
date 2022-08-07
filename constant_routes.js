@@ -3,4 +3,5 @@ export default Object.freeze({
     LOGIN: "Login",
     CALENDAR: "Calendar",
     SETTINGS: "Settings",
+    DETAILS: "Details"
 })

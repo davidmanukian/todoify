@@ -9,10 +9,22 @@ import {StyleSheet,} from "react-native";
 import {useStorage} from '../hooks/storage';
 import {useEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
+import Details from "./Details";
+import {createNativeStackNavigator} from "@react-navigation/native-stack";
 
 const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
 
 const paddingTop = Constants.statusBarHeight
+
+const InnerNavigator = () => {
+    return (
+        <Stack.Navigator>
+            <Stack.Screen name={routes.HOME} component={Home} options={{ headerShown: false }}/>
+            <Stack.Screen name={routes.DETAILS} component={Details}/>
+        </Stack.Navigator>
+    )
+}
 
 const AppNavigator = () => {
     const {selectedTab, setSelectedTab} = useState();
@@ -44,7 +56,7 @@ const AppNavigator = () => {
                        }
         >
             <Tab.Screen name={routes.HOME}
-                        component={Home}
+                        component={InnerNavigator}
                         options={{
                             tabBarIcon: ({color, size}) => (
                                 <MaterialCommunityIcons name="home"
