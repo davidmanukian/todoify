@@ -10,7 +10,7 @@ const TodoModal = (props) => {
                        marginTop: modalHeight,
                        flex: 1,
                        flexDirection: "column",
-                       backgroundColor: "white",
+                       backgroundColor: "red",
                        borderTopRightRadius: 15,
                        borderTopLeftRadius: 15
                    }

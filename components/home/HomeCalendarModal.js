@@ -14,7 +14,6 @@ const HomeCalendarModal = (props) => {
     }
 
     useEffect(() => {
-        console.log("Effect triggered")
         props.datePickerRef?.current?.open()
     }, [props.datePickerOpened])
 
