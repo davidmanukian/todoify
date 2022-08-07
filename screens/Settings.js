@@ -57,6 +57,33 @@ const Settings = () => {
             flex: 1,
             flexDirection: 'row'
         }}>
+            <TodoModal isVisible={visible}
+                       modalHeight={100}
+                       backdropOpacity={1}
+                       onBackdropPress={handleCancel}
+            >
+
+                <View style={{
+                    flexDirection: "column",
+                    flex: 1,
+                    flexWrap: "wrap",
+                    backgroundColor: 'white',
+                    paddingTop: 100
+                }}>
+
+                    <View style={{
+                        flexDirection: "row",
+                        justifyContent: "center"
+                    }}>
+                        <TextInput>
+
+                        </TextInput>
+
+                        <Button title="Save"/>
+                        <Button title="Cancel" onPress={() => handleCancel()}/>
+                    </View>
+                </View>
+            </TodoModal>
             {/*<Dialog.Container visible={visible}>*/}
             {/*    <Dialog.Title>Account delete</Dialog.Title>*/}
             {/*    <Dialog.Description>*/}
