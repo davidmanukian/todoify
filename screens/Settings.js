@@ -1,6 +1,8 @@
 import {
     Button,
-    Dimensions, KeyboardAvoidingView, Platform,
+    Dimensions,
+    KeyboardAvoidingView,
+    Platform,
     ScrollView,
     StyleSheet,
     TextInput,
@@ -11,7 +13,6 @@ import {useEffect, useState} from 'react';
 import {useStorage} from '../hooks/storage';
 import {COLLECTION_SECTIONS} from '../constant_storage';
 import {Cell, Section, TableView} from 'react-native-tableview-simple';
-import TodoModal from '../ui/modal';
 import app_constants from '../app_constants';
 
 const {
@@ -25,55 +26,63 @@ const Settings = () => {
     const {signOut} = useAuth();
     const {getItem, storeItem} = useStorage();
     const [sections, setSections] = useState([]);
-    const [visible, setVisible] = useState(false);
     const [sectionName, setSectionName] = useState('');
+
+    const [addASectionPressed, setAddSectionPressed] = useState(false)
 
 
     const showDialog = () => {
-        setVisible(true);
+        setAddSectionPressed(true);
+        setAddSectionPressed(true);
     };
 
     const handleCancel = () => {
-        setVisible(false);
+        setAddSectionPressed(false);
     };
 
     const handleDelete = () => {
-        // The user has pressed the "Delete" button, so here you can do your own logic.
-        // ...Your logic
-        setVisible(false);
+        setAddSectionPressed(false);
     };
 
     const saveNewSection = () => {
-        console.log('sectionName', sectionName);
         let newItem = {
             name: sectionName,
             isSelected: false
         };
-        console.log('newItem', newItem);
-        storeItem(COLLECTION_SECTIONS, [
-            ...sections || [],
-            newItem
-        ]);
+        persistSections([...sections, ...[newItem]]);
+        setAddSectionPressed(false);
+        setSectionName('');
+    }
 
-        setSections([...sections, ...[newItem]]);
+    const persistSections = (list) => {
+        storeItem(COLLECTION_SECTIONS, list);
+        setSections(list);
+    }
+
+    const changeAvailability = (index) => {
+        const sectionsToUpdate = [...sections];
+        sectionsToUpdate[index].isSelected = !sectionsToUpdate[index].isSelected;
+        persistSections([...sectionsToUpdate]);
     }
 
 
     useEffect(() => {
-        storeItem(COLLECTION_SECTIONS, []);
         getItem(COLLECTION_SECTIONS).subscribe((c) => {
             if (c.length >= 1) {
-                setSections([]);
+                setSections(c);
             }
         })
     }, []);
+
+    useEffect(() => {
+        console.log('setSections', sections);
+    }, [sections])
 
     return (
         <View style={styles.container}>
             <Section>
                 <Cell
                     onPress={() => showDialog()}
-                    cellStyle="Subtitle"
                     title="Add New Section"
                 />
             </Section>
@@ -84,64 +93,36 @@ const Settings = () => {
                             sections && sections.length >= 1 ? sections?.map((s, index) => {
                                 return <Cell
                                     key={index}
-                                    onPress={() => showDialog}
-                                    cellStyle="Subtitle"
-                                    accessory={s?.isSelectd ? 'Checkmark' : null}
+                                    onPress={() => changeAvailability(index)}
+                                    accessory={s?.isSelected ? 'Checkmark' : null}
                                     title={s?.name}
                                 />
                             }) : ''
                         }
                     </Section>
                 </TableView>
-                {/*<View*/}
-                {/*    style={{*/}
-                {/*        minHeight: Dimensions.get('window').height,*/}
-                {/*    }}>*/}
-                {/*    <View*/}
-                {/*        style={{*/}
-                {/*            // backgroundColor: 'transparent',*/}
-                {/*            height: 200,*/}
-                {/*            alignItems: 'center',*/}
-                {/*            justifyContent: 'center',*/}
-                {/*        }}>*/}
-                {/*    </View>*/}
-                {/*    <TableView>*/}
-                {/*        <Section footer="You are logged in as">*/}
-                {/*            <Cell*/}
-                {/*                title="Log out"*/}
-                {/*                titleTextColor="#007AFF"*/}
-                {/*                onPress={() => signOut()}*/}
-                {/*            />*/}
-                {/*        </Section>*/}
-                {/*    </TableView>*/}
-                {/*</View>*/}
             </ScrollView>
 
-            <KeyboardAvoidingView style={[styles.keyboardAvoidingViewStyle]}
-                                  behavior={Platform.OS === "ios" ? "padding" : "height"}>
-                <TodoModal isVisible={visible}
-                           modalHeight={sectionModalHeight}
-                           backdropOpacity={1}
-                           onBackdropPress={() => setVisible(false)}>
-                    <View style={{
-                        paddingTop: sectionModalHeight,
-                    }}>
+            {addASectionPressed &&
+                <KeyboardAvoidingView style={[styles.keyboardAvoidingViewStyle]}
+                                      behavior={Platform.OS === "ios" ? "padding" : "height"}>
+                    <View style={styles.inputWrapper}>
                         <View style={{
-                            flexDirection: 'column'
+                            flexDirection: 'row',
+                            justifyContent: 'flex-end'
                         }}>
-                            <View style={{flexDirection: 'row'}}>
-                                <Button onPress={saveNewSection}
-                                        color="black"
-                                        title="Save"/>
-                                <Button onPress={handleCancel}
-                                        title="Cancel"/>
-                            </View>
-                            <TextInput onChangeText={setSectionName}
-                                       style={styles.input}/>
+                            <Button onPress={saveNewSection}
+                                    color="black"
+                                    title="Save"/>
+                            <Button onPress={handleCancel}
+                                    title="Cancel"/>
                         </View>
+                        <TextInput onChangeText={setSectionName}
+                                   autoFocus={true}
+                                   style={styles.input}/>
                     </View>
-                </TodoModal>
-            </KeyboardAvoidingView>
+                </KeyboardAvoidingView>
+            }
         </View>
     )
 }
@@ -161,6 +142,11 @@ const styles = StyleSheet.create({
     },
 
     saveButton: {},
+    inputWrapper: {
+        flexDirection: 'column',
+        backgroundColor: 'white',
+        borderRadius: 15
+    },
     input: {
         height: 40,
         margin: 12,
