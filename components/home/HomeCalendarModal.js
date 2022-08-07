@@ -2,6 +2,7 @@ import TodoModal from "../../ui/modal";
 import {Text, TouchableOpacity, View} from "react-native";
 import {AntDesign, MaterialCommunityIcons} from "@expo/vector-icons";
 import {useEffect} from "react";
+import {DatePicker} from "react-native-woodpicker";
 
 
 const HomeCalendarModal = (props) => {
@@ -101,17 +102,17 @@ const HomeCalendarModal = (props) => {
                     <View>
                         <AntDesign name="right" size={24} color="black"/>
                     </View>
-                    {/*{ props.datePickerOpened &&*/}
-                    {/*<DatePicker*/}
-                    {/*    style={{flex:1}}*/}
-                    {/*    ref={props.datePickerRef}*/}
-                    {/*    value={props.datePickerValue}*/}
-                    {/*    onDateChange={(e) => props.addDueDate(e)}*/}
-                    {/*    title="Select Due Date"*/}
-                    {/*    isNullable={false}*/}
-                    {/*    iosDisplay="inline"*/}
-                    {/*/>*/}
-                    {/*}*/}
+                    { props.datePickerOpened &&
+                    <DatePicker
+                        style={{flex:1}}
+                        ref={props.datePickerRef}
+                        value={props.datePickerValue}
+                        onDateChange={(e) => props.addDueDate(e)}
+                        title="Select Due Date"
+                        isNullable={false}
+                        iosDisplay="inline"
+                    />
+                    }
                 </TouchableOpacity>
             </View>
         </TodoModal>

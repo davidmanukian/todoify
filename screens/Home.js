@@ -136,63 +136,62 @@ const Home = ({navigation}) => {
         getItem(path)
             .subscribe(
                 task => {
-                    const parsedTask = JSON.parse(task)
-                    parsedTask.status = status
-                    storeItem(path, JSON.stringify(parsedTask))
+                    task.status = status
+                    storeItem(path, JSON.stringify(task))
                     fetchTasks()
                 }
             )
     }
 
     return (
-                <ImageBackground source={require("../assets/backgroundImg3.jpg")} style={[styles.container]}>
-                    <TaskView
-                        navigation={navigation}
-                        dismissTask={() => dismissTask()}
-                        tasksGroupBySection={tasksGroupBySection}
-                        changeTaskStatus={(e, s) => changeTaskStatus(e, s)}
-                    />
-                    {addATaskPressed ?
-                        <TaskInput
-                            datePickerValue={datePickerValue}
-                            setTaskValue={(e) => setTaskValue(e)}
-                            openList={() => openList()}
-                            listValue={listValue}
-                            setListValue={(e) => setListValue(e)}
-                            openCalendar={() => openCalendar()}
+        <ImageBackground source={require("../assets/backgroundImg3.jpg")} style={[styles.container]}>
+            <TaskView
+                navigation={navigation}
+                dismissTask={() => dismissTask()}
+                tasksGroupBySection={tasksGroupBySection}
+                changeTaskStatus={(e, s) => changeTaskStatus(e, s)}
+            />
+            {addATaskPressed ?
+                <TaskInput
+                    datePickerValue={datePickerValue}
+                    setTaskValue={(e) => setTaskValue(e)}
+                    openList={() => openList()}
+                    listValue={listValue}
+                    setListValue={(e) => setListValue(e)}
+                    openCalendar={() => openCalendar()}
 
-                        />
-                        :
-                        <TaskAddButton
-                            showTaskModal={() => showTaskModal()}
-                        />
-                    }
-                    {addATaskPressed &&
-                        <TaskDoneButton
-                            addATask={() => addATask()}
-                        />
-                    }
+                />
+                :
+                <TaskAddButton
+                    showTaskModal={() => showTaskModal()}
+                />
+            }
+            {addATaskPressed &&
+                <TaskDoneButton
+                    addATask={() => addATask()}
+                />
+            }
 
-                    <HomeListModal isVisible={listModalVisible}
-                                   modalHeight={modalHeight}
-                                   onBackdropPress={() => setListModalVisible(false)}
-                                   cancelButton={() => setListModalVisible(false)}
-                                   sections={sections}
-                                   addList={(e) => addList(e)}
-                    />
+            <HomeListModal isVisible={listModalVisible}
+                           modalHeight={modalHeight}
+                           onBackdropPress={() => setListModalVisible(false)}
+                           cancelButton={() => setListModalVisible(false)}
+                           sections={sections}
+                           addList={(e) => addList(e)}
+            />
 
-                    <HomeCalendarModal isVisible={calendarModalVisible}
-                                       modalHeight={calendarModalHeight}
-                                       onBackdropPress={() => setCalendarModalVisible(false)}
-                                       addDueDate={(e) => addDueDate(e)}
-                                       setDatePickerOpened={(e) => setDatePickerOpened(e)}
-                                       datePickerOpened={datePickerOpened}
-                                       setDatePickerValue={(e) => setDatePickerOpened(e)}
-                                       datePickerValue={datePickerValue}
-                                       datePickerRef={datePickerRef}
+            <HomeCalendarModal isVisible={calendarModalVisible}
+                               modalHeight={calendarModalHeight}
+                               onBackdropPress={() => setCalendarModalVisible(false)}
+                               addDueDate={(e) => addDueDate(e)}
+                               setDatePickerOpened={(e) => setDatePickerOpened(e)}
+                               datePickerOpened={datePickerOpened}
+                               setDatePickerValue={(e) => setDatePickerOpened(e)}
+                               datePickerValue={datePickerValue}
+                               datePickerRef={datePickerRef}
 
-                    />
-                </ImageBackground>
+            />
+        </ImageBackground>
     )
 }
 
