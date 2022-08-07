@@ -18,7 +18,7 @@ import {useAuth} from "../hooks/auth";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome";
 import app_constants from "../app_constants";
 import {useEffect, useRef, useState} from "react";
-import {Entypo, Feather} from "@expo/vector-icons";
+import {AntDesign, Entypo, Feather} from "@expo/vector-icons";
 import TodoBadge from "../ui/badge";
 import HomeListModal from "../components/home/HomeListModal";
 import HomeCalendarModal from "../components/home/HomeCalendarModal";
@@ -57,8 +57,12 @@ const Item = (props) => {
                 justifyContent: "center",
                 marginHorizontal: 10
             }}>
+                {props.data.status === 'started' ?
+                    <Entypo name="circle" onPress={props.completeTask} size={24} color={grayishColor}/>
+                    :
+                    <AntDesign name="checkcircleo" size={24} color={grayishColor}/>
+                }
 
-                <Entypo name="circle" onPress={props.completeTask} size={24} color={grayishColor}/>
             </View>
             <View style={{
                 flex: 4
@@ -96,8 +100,7 @@ const SectionLabel = (props) => {
         <Text style={{
             marginLeft: 20,
             fontSize: 22,
-            fontWeight: "bold",
-            color: "white"
+            fontWeight: "bold"
         }}>
             {props.label}
         </Text>
@@ -109,7 +112,7 @@ const Home = () => {
 
     const datePickerRef = useRef(null);
 
-    const {getItem, removeItem, storeItem} = useStorage()
+    const {getItem, getAllItems, multiGetItems, removeItem, clearItems, storeItem} = useStorage()
 
     const [addATaskPressed, setAddATaskPressed] = useState(false)
 
@@ -132,27 +135,31 @@ const Home = () => {
         //     subscribe(e => {
         //         setSections(e)
         // })
-        getItem(COLLECTION_TASKS).subscribe(
-            tasks => {
-                if (tasks === undefined && tasks === null) {
-                    storeItem(COLLECTION_TASKS, JSON.stringify([]))
-                    console.log("Default list was successfully added")
-                }
-            }
-        )
-
         fetchTasks()
     }, [])
 
 
     const fetchTasks = () => {
-        getItem(COLLECTION_TASKS).subscribe(
-            tasks => {
-                const groupedBySection = groupBy(JSON.parse(tasks), task => task.list ?? "No Section")
-                const mappedDataToRequiredFormat = map(groupedBySection, (key, value) => ({section: value, data: key}))
-                setTasksGroupBySection(mappedDataToRequiredFormat)
-            }
-        )
+        getAllItems()
+            .subscribe(e => {
+                const filtered = e.filter(e => e.includes(COLLECTION_TASKS))
+                multiGetItems(filtered)
+                    .subscribe(result => {
+                        const tasks = []
+                        for (let i = 0; i < result.length; i++) {
+                            tasks.push(JSON.parse(result[i][1]))
+                        }
+
+                        const groupedBySection = groupBy(tasks, task => task.status === 'started' ?
+                            task.list ?? "No Section" : 'Completed')
+                        const mappedDataToRequiredFormat = map(groupedBySection, (key, value) => ({
+                            section: value,
+                            data: key
+                        }))
+
+                        setTasksGroupBySection(mappedDataToRequiredFormat)
+                    })
+            })
     }
 
     const showTaskModal = () => {
@@ -171,20 +178,21 @@ const Home = () => {
         console.log(taskValue)
         if (taskValue !== null) {
             const task = {
-                'uuid': uuid.v4,
-                'list': listValue,
-                'dueDate': dueDateValue,
-                'task': taskValue,
-                'status': "started"
+                id: uuid.v4(),
+                list: listValue,
+                dueDate: dueDateValue,
+                task: taskValue,
+                status: "started"
             }
-            getItem(COLLECTION_TASKS)
-                .subscribe(tasks => {
-                    tasks = JSON.parse(tasks)
-                    storeItem(COLLECTION_TASKS, JSON.stringify([...tasks, task]))
-                    dismissTask()
-                    Alert.alert("New task was added successfully")
-                    fetchTasks()
-                })
+
+            try {
+                storeItem(COLLECTION_TASKS + ":" + task.id, JSON.stringify(task))
+                dismissTask()
+                Alert.alert("New task was added successfully")
+                fetchTasks()
+            } catch (exc) {
+                console.log("Error occurred during saving new task ", exc)
+            }
         }
     }
 
@@ -223,53 +231,18 @@ const Home = () => {
     }
 
     const completeTask = (item) => {
-        getItem(COLLECTION_TASKS)
+        const path = COLLECTION_TASKS + ":" + item.id;
+        console.log("path", path)
+        getItem(path)
             .subscribe(
-                tasks => {
-                    const parsedTasks = JSON.parse(tasks)
-                    for (let i = 0; i < parsedTasks.length; i++) {
-                        const tmp = parsedTasks[i]
-                        if (item.uuid === tmp.uuid) {
-
-                        }
-                    }
-                    console.log(parsedTasks)
+                task => {
+                    const parsedTask = JSON.parse(task)
+                    parsedTask.status = 'completed'
+                    storeItem(path, JSON.stringify(parsedTask))
+                    fetchTasks()
                 }
             )
     }
-
-    // const sections = ["Section 1", "Section 2", "Section 3"]
-
-    const data = [
-        {
-            section: "Section 1",
-            data: [
-                {
-                    title: "To Complete 1", dueDate: new Date().toDateString()
-                },
-                {
-                    title: "To Complete 2", dueDate: new Date().toDateString()
-                },
-                {
-                    title: "To Complete 3", dueDate: new Date().toDateString()
-                }
-            ]
-        },
-        {
-            section: "Section 2",
-            data: [
-                {
-                    title: "To Complete 1", dueDate: new Date().toDateString()
-                },
-                {
-                    title: "To Complete 2", dueDate: new Date().toDateString()
-                },
-                {
-                    title: "To Complete 3", dueDate: new Date().toDateString()
-                }
-            ]
-        }
-    ];
 
     return (
         <ImageBackground source={require("../assets/backgroundImg3.jpg")} style={[styles.container]}>

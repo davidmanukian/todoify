@@ -15,6 +15,14 @@ const StorageProvider = ({children}) => {
         return from(AsyncStorage.getAllKeys())
     }
 
+    const multiGetItems = (keys) => {
+        return from(AsyncStorage.multiGet(keys))
+    }
+
+    const clearItems = () => {
+        return from(AsyncStorage.clear())
+    }
+
     const storeItem = (key, data) => {
         return from(AsyncStorage.setItem(
                 key,
@@ -36,6 +44,8 @@ const StorageProvider = ({children}) => {
             value={{
                 getItem,
                 getAllItems,
+                multiGetItems,
+                clearItems,
                 storeItem,
                 removeItem
             }}
