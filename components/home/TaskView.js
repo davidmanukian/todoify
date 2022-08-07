@@ -9,10 +9,10 @@ const TaskView = (props) => {
         <View style={[{flexDirection: "row", flex: 1, marginTop: 50}]}>
             <TouchableWithoutFeedback onPress={props.dismissTask}>
                 <SectionList sections={props.tasksGroupBySection}
-                             keyExtractor={(item, index) => item + index}
+                             keyExtractor={(item, index) => item.id}
                              renderItem={({item}) => <Item data={item}
-                                                           completeTask={() => props.completeTask(item)}
-                                                           undoCompleteTask={() => props.undoCompleteTask(item)}
+                                                           navigation={props.navigation}
+                                                           changeTaskStatus={(e,s) => props.changeTaskStatus(e, s)}
                                                            section/>}
                              renderSectionHeader={({section: {section}}) => (
                                  <SectionLabel label={section}/>
