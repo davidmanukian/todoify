@@ -2,7 +2,7 @@ import TodoModal from "../../ui/modal";
 import {Text, TouchableOpacity, View} from "react-native";
 import {AntDesign, MaterialCommunityIcons} from "@expo/vector-icons";
 import {useEffect} from "react";
-import {DatePicker} from 'react-native-woodpicker'
+import {DatePicker} from "react-native-woodpicker";
 
 
 const HomeCalendarModal = (props) => {
@@ -15,7 +15,6 @@ const HomeCalendarModal = (props) => {
     }
 
     useEffect(() => {
-        console.log("Effect triggered")
         props.datePickerRef?.current?.open()
     }, [props.datePickerOpened])
 

@@ -22,9 +22,10 @@ const AuthProvider = ({children}) => {
 
     useEffect(() => {
         if (response?.type === 'success') {
-            let innerAccessTOken = response.authentication.accessToken;
-            setAccessToken(innerAccessTOken);
-            storeItem(COLLECTION_AUTH_TOKEN, innerAccessTOken);
+            console.log('response', response);
+            let innerAccessToken = response.authentication.accessToken;
+            setAccessToken(innerAccessToken);
+            storeItem(COLLECTION_AUTH_TOKEN, innerAccessToken);
             getItem(COLLECTION_AUTH_TOKEN).subscribe(data => console.log(data))
         }
     }, [response]);
