@@ -1,5 +1,5 @@
 import React, {createContext, useContext} from 'react'
-import {from, of} from 'rxjs';
+import {from, map} from 'rxjs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const StorageContext = createContext({});
@@ -8,7 +8,16 @@ export const StorageContext = createContext({});
 const StorageProvider = ({children}) => {
 
     const getItem = (key) => {
-        return from(AsyncStorage.getItem(key));
+        return from(AsyncStorage.getItem(key))
+            .pipe(
+                map(res => {
+                    if (res && res.includes('{') && res.includes('}')) {
+                        return JSON.parse(res);
+                    } else {
+                        return res;
+                    }
+                })
+            );
     }
 
     const getAllItems = () => {
@@ -18,7 +27,7 @@ const StorageProvider = ({children}) => {
     const storeItem = (key, data) => {
         return from(AsyncStorage.setItem(
                 key,
-                data
+                (typeof data === 'string' || data instanceof String) ? data : JSON.stringify(data)
             )
         ).subscribe()
     };

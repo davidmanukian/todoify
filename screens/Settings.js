@@ -1,8 +1,8 @@
 import {
     Button,
-    Dimensions,
+    Dimensions, KeyboardAvoidingView, Platform,
     ScrollView,
-    StyleSheet, Text,
+    StyleSheet,
     TextInput,
     View
 } from 'react-native';
@@ -12,22 +12,22 @@ import {useStorage} from '../hooks/storage';
 import {COLLECTION_SECTIONS} from '../constant_storage';
 import {Cell, Section, TableView} from 'react-native-tableview-simple';
 import TodoModal from '../ui/modal';
+import app_constants from '../app_constants';
 
 const {
     width: SCREEN_WIDTH,
     height: SCREEN_HEIGHT,
 } = Dimensions.get('window');
 
-const sectionModalHeight = SCREEN_HEIGHT * 70 / 100;
+const sectionModalHeight = SCREEN_HEIGHT * 75 / 100;
 
 const Settings = () => {
     const {signOut} = useAuth();
     const {getItem, storeItem} = useStorage();
-    const {sections, setSections} = useState();
-
-    const modalHeight = SCREEN_HEIGHT * 10 / 100
-
+    const [sections, setSections] = useState([]);
     const [visible, setVisible] = useState(false);
+    const [sectionName, setSectionName] = useState('');
+
 
     const showDialog = () => {
         setVisible(true);
@@ -43,23 +43,33 @@ const Settings = () => {
         setVisible(false);
     };
 
+    const saveNewSection = () => {
+        console.log('sectionName', sectionName);
+        let newItem = {
+            name: sectionName,
+            isSelected: false
+        };
+        console.log('newItem', newItem);
+        storeItem(COLLECTION_SECTIONS, [
+            ...sections || [],
+            newItem
+        ]);
+
+        setSections([...sections, ...[newItem]]);
+    }
+
 
     useEffect(() => {
+        storeItem(COLLECTION_SECTIONS, []);
         getItem(COLLECTION_SECTIONS).subscribe((c) => {
-            console.log(c);
+            if (c.length >= 1) {
+                setSections([]);
+            }
         })
     }, []);
 
-
-    const addNewSection = () => {
-
-    }
-
     return (
-        <View style={{
-            flex: 1,
-            flexDirection: 'row'
-        }}>
+        <View style={styles.container}>
             <Section>
                 <Cell
                     onPress={() => showDialog()}
@@ -70,13 +80,17 @@ const Settings = () => {
             <ScrollView contentContainerStyle={styles.stage}>
                 <TableView>
                     <Section header="Sections">
-                        <Cell
-                            onPress={() => showDialog}
-                            cellStyle="Subtitle"
-                            accessory="Checkmark"
-                            title="Subtitle"
-                            detail="some section"
-                        />
+                        {
+                            sections && sections.length >= 1 ? sections?.map((s, index) => {
+                                return <Cell
+                                    key={index}
+                                    onPress={() => showDialog}
+                                    cellStyle="Subtitle"
+                                    accessory={s?.isSelectd ? 'Checkmark' : null}
+                                    title={s?.name}
+                                />
+                            }) : ''
+                        }
                     </Section>
                 </TableView>
                 {/*<View*/}
@@ -102,14 +116,32 @@ const Settings = () => {
                 {/*    </TableView>*/}
                 {/*</View>*/}
             </ScrollView>
-            <TodoModal isVisible={visible} modalHeight={sectionModalHeight}
-                       onBackdropPress={() => setVisible(false)}>
-                <View style={{
-                    paddingTop: sectionModalHeight
-                }}>
-                    <Text>Hello world</Text>
-                </View>
-            </TodoModal>
+
+            <KeyboardAvoidingView style={[styles.keyboardAvoidingViewStyle]}
+                                  behavior={Platform.OS === "ios" ? "padding" : "height"}>
+                <TodoModal isVisible={visible}
+                           modalHeight={sectionModalHeight}
+                           backdropOpacity={1}
+                           onBackdropPress={() => setVisible(false)}>
+                    <View style={{
+                        paddingTop: sectionModalHeight,
+                    }}>
+                        <View style={{
+                            flexDirection: 'column'
+                        }}>
+                            <View style={{flexDirection: 'row'}}>
+                                <Button onPress={saveNewSection}
+                                        color="black"
+                                        title="Save"/>
+                                <Button onPress={handleCancel}
+                                        title="Cancel"/>
+                            </View>
+                            <TextInput onChangeText={setSectionName}
+                                       style={styles.input}/>
+                        </View>
+                    </View>
+                </TodoModal>
+            </KeyboardAvoidingView>
         </View>
     )
 }
@@ -119,6 +151,27 @@ const styles = StyleSheet.create({
         backgroundColor: '#EFEFF4',
         paddingTop: 20,
         paddingBottom: 20,
+    },
+
+    container: {
+        position: 'static',
+        paddingTop: app_constants.STATUS_BAR_HEIGHT,
+        flex: 1,
+        backgroundColor: '#E8EAED',
+    },
+
+    saveButton: {},
+    input: {
+        height: 40,
+        margin: 12,
+        borderWidth: 1,
+        padding: 10,
+    },
+    keyboardAvoidingViewStyle: {
+        position: "absolute",
+        left: 0,
+        right: 0,
+        bottom: 0
     },
 });
 

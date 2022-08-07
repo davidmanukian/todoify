@@ -23,16 +23,18 @@ const AppNavigator = () => {
     useEffect(() => {
         getItem('selectedTab').subscribe(t => {
             if (t) {
+                console.log('t', t);
                 navigation.navigate(t);
             }
         })
     }, [])
     useEffect(() => {
-        const unsubscribe = navigation.addListener('state', (e) => {
-            let index = e.data.state.index;
-            let screenName = e.data.state.routeNames[index];
-            storeItem('selectedTab', screenName);
-        });
+        const unsubscribe = navigation.addListener('state',
+            (e) => {
+                let index = e.data.state.index;
+                let screenName = e.data.state.routeNames[index];
+                storeItem('selectedTab', screenName);
+            });
         return unsubscribe;
     }, [navigation]);
     return (
