@@ -1,7 +1,7 @@
 import TodoModal from "../../ui/modal";
 import {Text, TouchableOpacity, View} from "react-native";
 import {AntDesign, MaterialCommunityIcons} from "@expo/vector-icons";
-import {useState} from "react";
+import {useEffect} from "react";
 import {DatePicker} from 'react-native-woodpicker'
 
 
@@ -11,8 +11,13 @@ const HomeCalendarModal = (props) => {
     tomorrow.setDate(tomorrow.getDate() + 1);
 
     const openDatePicker = () => {
-        props.datePickerRef.current.open()
+        props.setDatePickerOpened(true)
     }
+
+    useEffect(() => {
+        console.log("Effect triggered")
+        props.datePickerRef?.current?.open()
+    }, [props.datePickerOpened])
 
     return (
         <TodoModal isVisible={props.isVisible}
@@ -98,7 +103,9 @@ const HomeCalendarModal = (props) => {
                     <View>
                         <AntDesign name="right" size={24} color="black"/>
                     </View>
+                    { props.datePickerOpened &&
                     <DatePicker
+                        style={{flex:1}}
                         ref={props.datePickerRef}
                         value={props.datePickerValue}
                         onDateChange={(e) => props.addDueDate(e)}
@@ -106,6 +113,7 @@ const HomeCalendarModal = (props) => {
                         isNullable={false}
                         iosDisplay="inline"
                     />
+                    }
                 </TouchableOpacity>
             </View>
         </TodoModal>

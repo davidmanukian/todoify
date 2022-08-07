@@ -6,11 +6,22 @@ import Settings from './Settings'
 import Calendar from "./Calendar";
 import Constants from 'expo-constants';
 import {StyleSheet,} from "react-native";
-import {CalendarProvider} from '../hooks/calendar';
+import Details from "./Details";
+import {createNativeStackNavigator} from "@react-navigation/native-stack";
 
 const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
 
 const paddingTop = Constants.statusBarHeight
+
+const InnerNavigator = () => {
+    return (
+        <Stack.Navigator>
+            <Stack.Screen name={routes.HOME} component={Home} options={{ headerShown: false }}/>
+            <Stack.Screen name={routes.DETAILS} component={Details}/>
+        </Stack.Navigator>
+    )
+}
 
 const AppNavigator = () => {
     return (
@@ -18,7 +29,7 @@ const AppNavigator = () => {
                        screenOptions={{headerShown: false}}
         >
             <Tab.Screen name={routes.HOME}
-                        component={Home}
+                        component={InnerNavigator}
                         options={{
                             tabBarIcon: ({color, size}) => (
                                 <MaterialCommunityIcons name="home"
@@ -27,19 +38,16 @@ const AppNavigator = () => {
                             ),
                         }}
             />
-            {/*<CalendarProvider>*/}
-                <Tab.Screen name={routes.CALENDAR}
-                            component={Calendar}
-                            options={{
-                                tabBarIcon: ({color, size}) => (
-                                    <MaterialCommunityIcons name="calendar"
-                                                            color={color}
-                                                            size={size}/>
-                                ),
-                            }}
-                />
-            {/*</CalendarProvider>*/}
-
+            <Tab.Screen name={routes.CALENDAR}
+                        component={Calendar}
+                        options={{
+                            tabBarIcon: ({color, size}) => (
+                                <MaterialCommunityIcons name="calendar"
+                                                        color={color}
+                                                        size={size}/>
+                            ),
+                        }}
+            />
             <Tab.Screen name={routes.SETTINGS}
                         component={Settings}
                         options={{
