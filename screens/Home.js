@@ -25,6 +25,7 @@ import HomeCalendarModal from "../components/home/HomeCalendarModal";
 import {COLLECTION_TASKS} from '../constant_storage';
 import {useStorage} from '../hooks/storage';
 import {groupBy, map} from "lodash";
+import uuid from 'react-native-uuid'
 
 const {
     width: SCREEN_WIDTH,
@@ -170,6 +171,7 @@ const Home = () => {
         console.log(taskValue)
         if (taskValue !== null) {
             const task = {
+                'uuid': uuid.v4,
                 'list': listValue,
                 'dueDate': dueDateValue,
                 'task': taskValue,
@@ -178,8 +180,7 @@ const Home = () => {
             getItem(COLLECTION_TASKS)
                 .subscribe(tasks => {
                     tasks = JSON.parse(tasks)
-                    tasks.push(task)
-                    storeItem(COLLECTION_TASKS, JSON.stringify(tasks))
+                    storeItem(COLLECTION_TASKS, JSON.stringify([...tasks, task]))
                     dismissTask()
                     Alert.alert("New task was added successfully")
                     fetchTasks()
@@ -226,9 +227,11 @@ const Home = () => {
             .subscribe(
                 tasks => {
                     const parsedTasks = JSON.parse(tasks)
-                    const foundTask = parsedTasks.filter(e => e.task === item.task)
-                    for (let i = 0; i < parsedTasks.length; i++){
-                        f
+                    for (let i = 0; i < parsedTasks.length; i++) {
+                        const tmp = parsedTasks[i]
+                        if (item.uuid === tmp.uuid) {
+
+                        }
                     }
                     console.log(parsedTasks)
                 }
