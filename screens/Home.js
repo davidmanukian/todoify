@@ -1,4 +1,5 @@
 import {
+    Alert,
     Button,
     Dimensions,
     ImageBackground,
@@ -17,14 +18,13 @@ import {useAuth} from "../hooks/auth";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome";
 import app_constants from "../app_constants";
 import {useEffect, useRef, useState} from "react";
-import {AntDesign, Entypo, Feather, Ionicons} from "@expo/vector-icons";
+import {Entypo, Feather} from "@expo/vector-icons";
 import TodoBadge from "../ui/badge";
 import HomeListModal from "../components/home/HomeListModal";
 import HomeCalendarModal from "../components/home/HomeCalendarModal";
 import {COLLECTION_TASKS} from '../constant_storage';
 import {useStorage} from '../hooks/storage';
-import {groupBy, chain, map} from "lodash";
-// import rxjs, {from, groupBy, map, mergeMap, of, reduce, tap, toArray, zip} from "rxjs";
+import {groupBy, map} from "lodash";
 
 const {
     width: SCREEN_WIDTH,
@@ -71,7 +71,7 @@ const Item = (props) => {
                         color: whitenColor,
                         fontSize: 16
                     }}>
-                        {props.data.title}
+                        {props.data.task}
                     </Text>
                     <View style={{
                         flexDirection: "row",
@@ -95,7 +95,8 @@ const SectionLabel = (props) => {
         <Text style={{
             marginLeft: 20,
             fontSize: 22,
-            fontWeight: "bold"
+            fontWeight: "bold",
+            color: "white"
         }}>
             {props.label}
         </Text>
@@ -104,6 +105,8 @@ const SectionLabel = (props) => {
 
 const Home = () => {
     const {signOut} = useAuth()
+
+    const datePickerRef = useRef(null);
 
     const {getItem, removeItem, storeItem} = useStorage()
 
@@ -136,57 +139,19 @@ const Home = () => {
                 }
             }
         )
+
+        fetchTasks()
     }, [])
 
-    useEffect(() => {
-        // [{}, {}, {}, {}]
-        // [{section: list1, data:[] }]
-        const data = [
-            {"list": "Section 1", "dueDate": "Today", "task": "Tree "},
-            {"list": "Section 1", "dueDate": "Tomorrow", "task": "Police "},
-            {"list": "Section 2", "dueDate": "Tomorrow", "task": "Police "},
-        ]
-        // from(JSON.stringify(data))
-        // // getItem(COLLECTION_TASKS)
-        //     .pipe(
-        //         map(e => JSON.parse(e)),
-        //         tap((e) => {
-        //             console.log("tap log", e)
-        //         }),
-        //         groupBy(task => task.list),
-        //         mergeMap(group => zip(of({"section": group.key}), group.pipe(toArray()))),
-        //         tap((e) => {
-        //             console.log("groupby tap log", e)
-        //         }),
-        //     )
-        //     .subscribe(tasks => {
-        //         // console.log('fetched tasks', tasks)
-        //     })
 
+    const fetchTasks = () => {
         getItem(COLLECTION_TASKS).subscribe(
-            e => {
-                const groupedBy = groupBy(JSON.parse(e), task => task.list)
-                const mapped = map(groupedBy, (key, value) => ({section: key, data: value}))
-                console.log('lodash', JSON.stringify(mapped))
-                setTasksGroupBySection(mapped)
+            tasks => {
+                const groupedBySection = groupBy(JSON.parse(tasks), task => task.list ?? "No Section")
+                const mappedDataToRequiredFormat = map(groupedBySection, (key, value) => ({section: value, data: key}))
+                setTasksGroupBySection(mappedDataToRequiredFormat)
             }
         )
-    }, [])
-
-
-    useEffect(() => {
-        console.log(tasksGroupBySection)
-    }, [tasksGroupBySection])
-
-
-    const datePickerRef = useRef(null);
-
-    const doSignOut = async () => {
-        try {
-            await signOut()
-        } catch (err) {
-            console.log(err)
-        }
     }
 
     const showTaskModal = () => {
@@ -196,6 +161,9 @@ const Home = () => {
     const dismissTask = () => {
         Keyboard.dismiss;
         setAddATaskPressed(false)
+        setDatePickerValue(null)
+        setDueDateValue(null)
+        setListValue(null)
     }
 
     const addATask = () => {
@@ -204,13 +172,17 @@ const Home = () => {
             const task = {
                 'list': listValue,
                 'dueDate': dueDateValue,
-                'task': taskValue
+                'task': taskValue,
+                'status': "started"
             }
             getItem(COLLECTION_TASKS)
                 .subscribe(tasks => {
                     tasks = JSON.parse(tasks)
                     tasks.push(task)
                     storeItem(COLLECTION_TASKS, JSON.stringify(tasks))
+                    dismissTask()
+                    Alert.alert("New task was added successfully")
+                    fetchTasks()
                 })
         }
     }
@@ -249,8 +221,18 @@ const Home = () => {
 
     }
 
-    const completeTask = () => {
-        console.log("Clicked")
+    const completeTask = (item) => {
+        getItem(COLLECTION_TASKS)
+            .subscribe(
+                tasks => {
+                    const parsedTasks = JSON.parse(tasks)
+                    const foundTask = parsedTasks.filter(e => e.task === item.task)
+                    for (let i = 0; i < parsedTasks.length; i++){
+                        f
+                    }
+                    console.log(parsedTasks)
+                }
+            )
     }
 
     // const sections = ["Section 1", "Section 2", "Section 3"]
@@ -290,13 +272,15 @@ const Home = () => {
         <ImageBackground source={require("../assets/backgroundImg3.jpg")} style={[styles.container]}>
             <View style={[{flexDirection: "row", flex: 1, marginTop: 50}]}>
                 <TouchableWithoutFeedback onPress={dismissTask}>
-                    <SectionList sections={data}
+                    <SectionList sections={tasksGroupBySection}
                                  keyExtractor={(item, index) => item + index}
-                                 renderItem={({item}) => <Item data={item} completeTask={() => completeTask()}
+                                 renderItem={({item}) => <Item data={item} completeTask={() => completeTask(item)}
                                                                section/>}
                                  renderSectionHeader={({section: {section}}) => (
                                      <SectionLabel label={section}/>
-                                 )}/>
+                                 )}
+
+                    />
                 </TouchableWithoutFeedback>
             </View>
             {addATaskPressed ?
@@ -410,7 +394,7 @@ const styles = StyleSheet.create({
         alignSelf: "stretch",
         minWidth: addATaskWidth,
         backgroundColor: mainBackgroundColor,
-        paddingVertical: 15
+        paddingVertical: 10
     },
     addATaskModalContainer: {
         borderTopRightRadius: 15,
