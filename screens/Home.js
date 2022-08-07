@@ -216,10 +216,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    addATaskContainerStyle: {
-        flexDirection: "row",
-        marginBottom: 15
-    },
 });
 
 export default Home;
