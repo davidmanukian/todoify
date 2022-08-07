@@ -1,5 +1,6 @@
 import {Text, View} from "react-native";
 import {AntDesign, Entypo} from "@expo/vector-icons";
+import {grayishColor, mainBackgroundColor, whitenColor} from "../../colors";
 
 const Item = (props) => {
     return (
@@ -20,7 +21,7 @@ const Item = (props) => {
                 {props.data.status === 'started' ?
                     <Entypo name="circle" onPress={props.completeTask} size={24} color={grayishColor}/>
                     :
-                    <AntDesign name="checkcircleo" size={24} color={grayishColor}/>
+                    <AntDesign name="checkcircleo" onPress={props.undoCompleteTask} size={24} color={grayishColor}/>
                 }
 
             </View>
