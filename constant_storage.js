@@ -1,0 +1,9 @@
+const DATABASE_NAME = '@todoify'
+
+const COLLECTION_AUTH_TOKEN = `${DATABASE_NAME}:auth-token`
+const COLLECTION_TASKS = `${DATABASE_NAME}:tasks`
+
+export {
+    COLLECTION_AUTH_TOKEN,
+    COLLECTION_TASKS
+}

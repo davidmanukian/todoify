@@ -16,10 +16,11 @@ const TodoBadge = (props) => {
                     marginLeft: 20,
                     fontWeight: "bold",
                     marginTop: 2,
-                    color: "white"
+                    color: "#065a60"
                 }}>{props.data}</Text>
                 <FontAwesome5.Button size={props.buttonSize}
                                      backgroundColor={props.buttonBackgroundColor}
+                                     color={"#065a60"}
                                      iconStyle={{
                                          margin: 0,
                                          paddingRight: 0,

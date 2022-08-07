@@ -1,5 +1,5 @@
 import React, {createContext, useContext} from 'react'
-import {from} from 'rxjs';
+import {from, of} from 'rxjs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const StorageContext = createContext({});
@@ -9,6 +9,10 @@ const StorageProvider = ({children}) => {
 
     const getItem = (key) => {
         return from(AsyncStorage.getItem(key));
+    }
+
+    const getAllItems = () => {
+        return from(AsyncStorage.getAllKeys())
     }
 
     const storeItem = (key, data) => {
@@ -31,6 +35,7 @@ const StorageProvider = ({children}) => {
         <StorageContext.Provider
             value={{
                 getItem,
+                getAllItems,
                 storeItem,
                 removeItem
             }}
