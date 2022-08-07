@@ -17,6 +17,7 @@ import {COLLECTION_SECTIONS} from '../constant_storage';
 import {Cell, Section, TableView} from 'react-native-tableview-simple';
 import app_constants from '../app_constants';
 import {SwipeListView} from 'react-native-swipe-list-view';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome';
 
 const {
     width: SCREEN_WIDTH,
@@ -58,8 +59,9 @@ const Settings = () => {
     }
 
     const deleteSection = (index) => {
-        sections.slice(index, 1)
-        persistSections([...sections.filter((c, innerI) => innerI !== index)]);
+        const indexToDelete = Number(index);
+        let newArr = [...sections.filter((c, innerI) => Number(innerI) !== indexToDelete)];
+        persistSections(newArr);
     }
 
     const persistSections = (list) => {
@@ -69,6 +71,8 @@ const Settings = () => {
 
     const changeAvailability = (index) => {
         const sectionsToUpdate = [...sections];
+        console.log('sectionsToUpdate[index]', index, sectionsToUpdate);
+
         sectionsToUpdate[index].isSelected = !sectionsToUpdate[index].isSelected;
         persistSections([...sectionsToUpdate]);
     }
@@ -76,7 +80,7 @@ const Settings = () => {
 
     useEffect(() => {
         getItem(COLLECTION_SECTIONS).subscribe((c) => {
-            if (c.length >= 1) {
+            if (c !== '[]' && c.length >= 1) {
                 console.log('set sections', c.length);
                 setSections(c);
             }
@@ -102,35 +106,42 @@ const Settings = () => {
                         disableRightSwipe
                         data={sections?.map((cItem, i) => ({
                             key: `${i}`,
-                            text: cItem?.name
+                            text: cItem?.name,
+                            isSelected: cItem?.isSelected
                         }))}
                         renderItem={(data, rowMap) => (
                             <TouchableHighlight
-                                onPress={() => console.log('switch pressed')}>
+                                onPress={() => changeAvailability(data.item.key)}>
                                 <View style={styles.rowFront}>
-                                    <Text>{data.item.text}</Text>
+                                    <Text
+                                        style={{
+                                            justifyContent: 'space-between',
+                                            display: 'flex'
+                                        }}>{data.item.text}
+                                    </Text>
+                                    {data.item.isSelected &&  <FontAwesome5.Button size='15'
+                                                          backgroundColor='transparent'
+                                                          color={"#065a60"}
+                                                          iconStyle={{
+                                                              margin: 0,
+                                                              paddingRight: 0,
+                                                              paddingLeft: 0
+                                                          }}
+                                                          style={{
+                                                              margin: 0,
+                                                              paddingRight: 0
+                                                          }}
+                                                          name='check'
+                                    />}
                                 </View>
                             </TouchableHighlight>
-                        )}
-                        renderHiddenRow={(data, rowMap) => (
-                            <View>
-                                <Text>Left</Text>
-                                <Text>Right</Text>
-                            </View>
-                        )}
-                        renderRow={(data, rowMap) => (
-                            <View>
-                                <Text>Left</Text>
-                                <Text>Right</Text>
-                            </View>
                         )}
                         renderHiddenItem={(data, rowMap) => (
                             <View style={styles.rowBack}>
                                 <Text>Left</Text>
                                 <TouchableOpacity
                                     style={[styles.backRightBtn, styles.backRightBtnRight]}
-                                    onPress={() => deleteSection(data.item.key)}
-                                >
+                                    onPress={() => deleteSection(data.item.key)}>
                                     <Text
                                         style={styles.backTextWhite}>Delete</Text>
                                 </TouchableOpacity>
@@ -219,8 +230,10 @@ const styles = StyleSheet.create({
         paddingLeft: 16,
         paddingRight: 16,
         backgroundColor: 'white',
-        justifyContent: 'center',
-        marginBottom: 1
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 1,
+        flexDirection: 'row'
     },
     backTextWhite: {
         color: '#FFF',
