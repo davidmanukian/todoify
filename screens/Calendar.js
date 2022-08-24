@@ -1,15 +1,12 @@
 import {Alert, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {useAuth} from "../hooks/auth";
 import {Agenda} from 'react-native-calendars';
 import {useEffect, useState} from 'react';
-import {from, map, of, switchMap, tap} from 'rxjs';
-import dayjs from 'dayjs';
 import {useCalendar} from '../hooks/calendar';
+import app_constants from "../app_constants";
 // import {fromPromise} from 'rxjs/';
 
 
 const TEST_ID = 'test-calendar'
-import app_constants from "../app_constants";
 
 const Calendar = () => {
     const {getEvents} = useCalendar()
@@ -70,6 +67,11 @@ const Calendar = () => {
         );
     }
 
+    const renderEmptyData = () => {
+        return <View style={styles.emptyDataBlock}>
+            <Text>There are no events on this date</Text>
+        </View>;
+    }
     const renderEmptyDate = () => {
         return (
             <View style={styles.emptyDate}>
@@ -94,8 +96,9 @@ const Calendar = () => {
                 testID={TEST_ID}
                 items={events}
                 // loadItemsForMonth={loadItems}
-                selected={'2022-07-31'}
+                selected={new Date().toISOString()}
                 renderItem={renderItem}
+                renderEmptyData={renderEmptyData}
                 renderEmptyDate={renderEmptyDate}
                 rowHasChanged={rowHasChanged}
                 showClosingKnob={true}
@@ -146,6 +149,9 @@ const styles = StyleSheet.create({
         height: 15,
         flex: 1,
         paddingTop: 30
+    },
+    emptyDataBlock: {
+        padding: 16
     }
 })
 

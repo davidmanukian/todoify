@@ -119,20 +119,18 @@ const Settings = () => {
                                             display: 'flex'
                                         }}>{data.item.text}
                                     </Text>
-                                    {data.item.isSelected &&  <FontAwesome5.Button size='15'
-                                                          backgroundColor='transparent'
-                                                          color={"#065a60"}
-                                                          iconStyle={{
-                                                              margin: 0,
-                                                              paddingRight: 0,
-                                                              paddingLeft: 0
-                                                          }}
-                                                          style={{
-                                                              margin: 0,
-                                                              paddingRight: 0
-                                                          }}
-                                                          name='check'
-                                    />}
+                                    {data.item.isSelected &&
+                                        <FontAwesome5.Button
+                                            backgroundColor='transparent'
+                                            color={"#065a60"}
+                                            iconStyle={{
+                                                margin: 0,
+                                                paddingRight: 0,
+                                                paddingLeft: 0
+                                            }}
+                                            style={styles.awesomeBtn}
+                                            name='check'
+                                        />}
                                 </View>
                             </TouchableHighlight>
                         )}
@@ -259,6 +257,12 @@ const styles = StyleSheet.create({
         backgroundColor: 'red',
         right: 0,
     },
+    awesomeBtn: {
+        margin: 0,
+        paddingRight: 0,
+        fontSize: 15,
+        backgroundColor: 'transparent'
+    }
 });
 
 export default Settings
