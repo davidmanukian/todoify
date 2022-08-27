@@ -56,8 +56,9 @@ const CalendarProvider = ({children}) => {
     const updateEvent = async () => {
     }
 
-    const getEvents = () => {
-        return from(fetch(`https://www.googleapis.com/calendar/v3/calendars/primary/events`,
+    const getEvents = (date) => {
+        return from(fetch(
+            `https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=${date}T00:00:00Z&timeMax=${date}T23:59:00Z`,
             {
                 ...{
                     method: 'GET',
@@ -69,7 +70,6 @@ const CalendarProvider = ({children}) => {
                     map(res => res.items),
                     map(items => {
                         let obj = {};
-                        console.log('items', items);
                         items.forEach(item => {
                             let startDate = item?.start?.dateTime;
                             let key = dayjs(startDate).format('YYYY-MM-DD');
@@ -84,11 +84,8 @@ const CalendarProvider = ({children}) => {
                         })
                         return obj;
                     })
-                ) : of(signOut())
-            }),
-            tap(e => {
-                console.log(e)
-            }),
+                ) : of("No Events")
+            })
         )
     }
 
