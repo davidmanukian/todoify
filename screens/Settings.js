@@ -1,6 +1,6 @@
 import {
     Button,
-    Dimensions, ImageBackground,
+    Dimensions,
     KeyboardAvoidingView,
     Platform,
     StyleSheet,
@@ -33,6 +33,14 @@ const Settings = () => {
     const [sectionName, setSectionName] = useState('');
 
     const [addASectionPressed, setAddSectionPressed] = useState(false)
+
+    useEffect(() => {
+        getItem(COLLECTION_SECTIONS).subscribe((sections) => {
+            if (sections && sections.length > 0 && sections !== '[]') {
+                setSections(sections);
+            }
+        })
+    }, []);
 
 
     const showDialog = () => {
@@ -81,21 +89,11 @@ const Settings = () => {
         persistSections([...sectionsToUpdate]);
     }
 
-
-    useEffect(() => {
-        getItem(COLLECTION_SECTIONS).subscribe((sections) => {
-            console.log(sections)
-            if (sections && sections.length > 0) {
-                setSections(sections);
-            }
-        })
-    }, []);
-
     return (
         <View style={styles.container}>
             <Button title="Add New Section" onPress={() => showDialog()}/>
             <TableView>
-                {sections && sections.length > 0 ?
+                {(sections && sections.length > 0) ?
                     <Section header="Sections" style={styles.container}>
                         <SwipeListView
                             disableRightSwipe
