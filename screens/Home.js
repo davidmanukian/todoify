@@ -41,6 +41,21 @@ const Home = ({navigation}) => {
 
     const [tasksGroupBySection, setTasksGroupBySection] = useState([])
 
+    let enabledSections = [];
+
+    useEffect(() => {
+        navigation.addListener('focus', () => {
+            enabledSections = []
+        })
+    }, [])
+
+    useEffect(() => {
+        navigation.addListener('focus', () => {
+            fetchSections();
+        })
+        fetchSections();
+    }, [])
+
     useEffect(() => {
         navigation.addListener('focus', () => {
             fetchTasks()
@@ -51,19 +66,17 @@ const Home = ({navigation}) => {
         fetchTasks()
     }, [])
 
-    useEffect(() => {
-        navigation.addListener('focus', () => {
-            fetchSections();
-        })
-        fetchSections();
-    }, [])
-
     const fetchSections = () => {
         getItemRaw(COLLECTION_SECTIONS)
             .subscribe(data => {
                 if (data) {
                     const parsedSections = JSON.parse(data)
-                    const sections = parsedSections.map(data => data.name)
+                    const sections = parsedSections.filter(e => e.isSelected).map(data => data.name)
+                    parsedSections.forEach(e => {
+                        if (e.isSelected) {
+                            enabledSections.push(e.name)
+                        }
+                    })
                     setSections(sections)
                 }
             })
@@ -76,11 +89,11 @@ const Home = ({navigation}) => {
                 const filtered = e.filter(e => e.includes(COLLECTION_TASKS))
                 multiGetItems(filtered)
                     .subscribe(result => {
-                        const tasks = []
+                        let tasks = []
                         for (let i = 0; i < result.length; i++) {
                             tasks.push(JSON.parse(result[i][1]))
                         }
-
+                        tasks = tasks.filter(e => enabledSections.includes(e.list))
                         const groupedBySection = groupBy(tasks, task => task.status === 'started' ?
                             task.list ?? "No Section" : 'Completed')
                         const mappedDataToRequiredFormat = map(groupedBySection, (key, value) => ({

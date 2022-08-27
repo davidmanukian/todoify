@@ -152,7 +152,7 @@ const Details = (props) => {
                                 <View style={[styles.cellContentViewStyle]}>
                                     {e.icon}
                                     <Text style={[styles.cellContentViewTextStyle, {
-                                        "color": e.disabled ? "gray" : ""
+                                        "color": e.disabled ? "gray" : "black"
                                     }]}>{e.text}</Text>
                                 </View>
                             }
