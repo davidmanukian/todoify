@@ -1,4 +1,4 @@
-import {Alert, Button, StatusBar, StyleSheet, Text, View} from 'react-native';
+import {Alert, Button, ImageBackground, StatusBar, StyleSheet, Text, View} from 'react-native';
 import {useAuth} from "../hooks/auth";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome";
 
@@ -15,11 +15,11 @@ const Login = () => {
     }
 
     return (
-        <View style={styles.container}>
+        <ImageBackground source={require("../assets/login.jpg")} style={styles.container}>
             <FontAwesome5.Button name="google" onPress={doSignIn}>
                 Sign in with Google
             </FontAwesome5.Button>
-        </View>
+        </ImageBackground>
     )
 }
 

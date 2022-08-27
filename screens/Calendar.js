@@ -1,4 +1,4 @@
-import {Alert, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Alert, ImageBackground, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Agenda} from 'react-native-calendars';
 import {useEffect, useState} from 'react';
 import {useCalendar} from '../hooks/calendar';
@@ -58,7 +58,7 @@ const Calendar = () => {
 
     const getEventsPerDay = (day) => {
         getEvents(day.dateString).subscribe((event) => {
-            if (Object.keys(event).length > 0) {
+            if (event !== "No Events" && Object.keys(event).length > 0) {
                 setEvents(event)
             } else {
                 const date = day.dateString
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
         position: 'static',
         paddingTop: app_constants.STATUS_BAR_HEIGHT,
         flex: 1,
-        backgroundColor: '#E8EAED',
+        // backgroundColor: '#E8EAED',
     },
     calendarWrapper: {},
     items: {},

@@ -1,6 +1,6 @@
 import {
     Button,
-    Dimensions,
+    Dimensions, ImageBackground,
     KeyboardAvoidingView,
     Platform,
     StyleSheet,
@@ -83,80 +83,80 @@ const Settings = () => {
 
 
     useEffect(() => {
-        getItem(COLLECTION_SECTIONS).subscribe((c) => {
-            if (c !== '[]' && c.length >= 1) {
-                console.log('set sections', c.length);
-                setSections(c);
+        getItem(COLLECTION_SECTIONS).subscribe((sections) => {
+            console.log(sections)
+            if (sections && sections.length > 0) {
+                setSections(sections);
             }
         })
     }, []);
 
-    useEffect(() => {
-        console.log('setSections', sections);
-    }, [sections])
-
     return (
         <View style={styles.container}>
-            <Section>
-                <Cell
-                    onPress={() => showDialog()}
-                    title="Add New Section"
-                />
-            </Section>
-            {/*<ScrollView contentContainerStyle={styles.stage}>*/}
+            <Button title="Add New Section" onPress={() => showDialog()}/>
             <TableView>
-                <Section header="Sections" style={styles.container}>
-                    <SwipeListView
-                        disableRightSwipe
-                        data={sections?.map((cItem, i) => ({
-                            key: `${i}`,
-                            text: cItem?.name,
-                            isSelected: cItem?.isSelected
-                        }))}
-                        renderItem={(data, rowMap) => (
-                            <TouchableHighlight
-                                onPress={() => changeAvailability(data.item.key)}>
-                                <View style={styles.rowFront}>
-                                    <Text
-                                        style={{
-                                            justifyContent: 'space-between',
-                                            display: 'flex'
-                                        }}>{data.item.text}
-                                    </Text>
-                                    {data.item.isSelected &&  <FontAwesome5.Button size={15}
-                                                          backgroundColor='transparent'
-                                                          color={"#065a60"}
-                                                          iconStyle={{
-                                                              margin: 0,
-                                                              paddingRight: 0,
-                                                              paddingLeft: 0
-                                                          }}
-                                                          style={{
-                                                              margin: 0,
-                                                              paddingRight: 0
-                                                          }}
-                                                          name='check'
-                                    />}
+                {sections && sections.length > 0 ?
+                    <Section header="Sections" style={styles.container}>
+                        <SwipeListView
+                            disableRightSwipe
+                            data={sections?.map((cItem, i) => ({
+                                key: `${i}`,
+                                text: cItem?.name,
+                                isSelected: cItem?.isSelected
+                            }))}
+                            renderItem={(data, rowMap) => (
+                                <TouchableHighlight
+                                    onPress={() => changeAvailability(data.item.key)}>
+                                    <View style={[styles.rowFront]}>
+                                        <Text
+                                            style={{
+                                                justifyContent: 'space-between',
+                                                display: 'flex'
+                                            }}>{data.item.text}
+                                        </Text>
+                                        {data.item.isSelected && <FontAwesome5.Button size={15}
+                                                                                      backgroundColor='transparent'
+                                                                                      color={"#065a60"}
+                                                                                      iconStyle={{
+                                                                                          margin: 0,
+                                                                                          paddingRight: 0,
+                                                                                          paddingLeft: 0
+                                                                                      }}
+                                                                                      style={{
+                                                                                          margin: 0,
+                                                                                          paddingRight: 0
+                                                                                      }}
+                                                                                      name='check'
+                                        />}
+                                    </View>
+                                </TouchableHighlight>
+                            )}
+                            renderHiddenItem={(data, rowMap) => (
+                                <View style={styles.rowBack}>
+                                    <Text>Left</Text>
+                                    <TouchableOpacity
+                                        style={[styles.backRightBtn, styles.backRightBtnRight]}
+                                        onPress={() => deleteSection(data.item.key)}>
+                                        <Text
+                                            style={styles.backTextWhite}>Delete</Text>
+                                    </TouchableOpacity>
                                 </View>
-                            </TouchableHighlight>
-                        )}
-                        renderHiddenItem={(data, rowMap) => (
-                            <View style={styles.rowBack}>
-                                <Text>Left</Text>
-                                <TouchableOpacity
-                                    style={[styles.backRightBtn, styles.backRightBtnRight]}
-                                    onPress={() => deleteSection(data.item.key)}>
-                                    <Text
-                                        style={styles.backTextWhite}>Delete</Text>
-                                </TouchableOpacity>
-                            </View>
-                        )}
-                        leftOpenValue={75}
-                        rightOpenValue={-75}
-                    />
+                            )}
+                            leftOpenValue={75}
+                            rightOpenValue={-75}
+                        />
+                    </Section>
+                    :
+                    <Text style={[styles.noSectionsText]}>No Created Sections.</Text>
+                }
+                <Section>
+                    <Cell cellContentView={
+                        <View style={[styles.logOutViewStyle]}>
+                            <Text style={[styles.logOutTextStyle]}>Log Out</Text>
+                        </View>
+                    } onPress={signOut}/>
                 </Section>
             </TableView>
-            <Button title={"ClearAll"} onPress={clearAl}/>
 
             {addASectionPressed &&
                 <KeyboardAvoidingView style={[styles.keyboardAvoidingViewStyle]}
@@ -200,13 +200,15 @@ const styles = StyleSheet.create({
     inputWrapper: {
         flexDirection: 'column',
         backgroundColor: 'white',
-        borderRadius: 15
+        borderTopRightRadius: 15,
+        borderTopLeftRadius: 15
     },
     input: {
         height: 40,
         margin: 12,
         borderWidth: 1,
         padding: 10,
+        borderRadius: 10
     },
     keyboardAvoidingViewStyle: {
         position: "absolute",
@@ -264,6 +266,19 @@ const styles = StyleSheet.create({
         backgroundColor: 'red',
         right: 0,
     },
+    noSectionsText: {
+        left: SCREEN_WIDTH / 3.5,
+        top: 300,
+        fontSize: 20
+    },
+    logOutViewStyle: {
+        flex: 1,
+        flexDirection: "row",
+        justifyContent: "center"
+    },
+    logOutTextStyle: {
+        fontSize: 18
+    }
 });
 
 export default Settings
