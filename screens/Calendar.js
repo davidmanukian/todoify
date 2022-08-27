@@ -1,71 +1,40 @@
 import {Alert, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {useAuth} from "../hooks/auth";
 import {Agenda} from 'react-native-calendars';
 import {useEffect, useState} from 'react';
-import {from, map, of, switchMap, tap} from 'rxjs';
-import dayjs from 'dayjs';
 import {useCalendar} from '../hooks/calendar';
-// import {fromPromise} from 'rxjs/';
+import app_constants from "../app_constants";
+import dayjs from "dayjs";
 
 
 const TEST_ID = 'test-calendar'
-import app_constants from "../app_constants";
 
 const Calendar = () => {
     const {getEvents} = useCalendar()
-    const [isModalVisible, setIsModalVisible] = useState(false);
     const [events, setEvents] = useState({});
-    const [marksDate, setMarksDate] = useState({});
-    const [refreshCalender, setRefreshCalender] = useState(false);
 
+    const today = new Date();
 
     useEffect(() => {
-        getEvents().subscribe(e => {
-            setEvents(e);
-        });
-    }, []);
-
-    const loadItems = (day) => {
-        const items = {};
-
-        setTimeout(() => {
-            for (let i = -15; i < 85; i++) {
-                const time = day.timestamp + i * 24 * 60 * 60 * 1000;
-                const strTime = timeToString(time);
-
-                if (!items[strTime]) {
-                    items[strTime] = [];
-
-                    const numItems = Math.floor(Math.random() * 3 + 1);
-                    for (let j = 0; j < numItems; j++) {
-                        items[strTime].push({
-                            name: 'Item for ' + strTime + ' #' + j,
-                            height: Math.max(50, Math.floor(Math.random() * 150)),
-                            day: strTime
-                        });
-                    }
-                }
-            }
-
-            const newItems = {};
-            Object.keys(items).forEach(key => {
-                newItems[key] = items[key];
-            });
-            setEvents(newItems);
-        }, 1000);
-    }
+        const date = {
+            dateString: timeToString(new Date())
+        }
+        getEventsPerDay(date)
+    }, [])
 
     const renderItem = (reservation, isFirst) => {
         const fontSize = isFirst ? 16 : 14;
         const color = isFirst ? 'black' : '#43515c';
 
+        const period = dayjs(reservation.start).format("HH:mm") + "-" + dayjs(reservation.end).format("HH:mm")
+
         return (
             <TouchableOpacity
                 testID={TEST_ID}
                 style={[styles.item, {height: reservation.height}]}
-                onPress={() => Alert.alert(reservation.name)}
+                onPress={() => Alert.alert("This feature will be enabled in next release.")}
             >
                 <Text style={{fontSize, color}}>{reservation.name}</Text>
+                <Text style={[styles.periodText]}>{period}</Text>
             </TouchableOpacity>
         );
     }
@@ -73,7 +42,7 @@ const Calendar = () => {
     const renderEmptyDate = () => {
         return (
             <View style={styles.emptyDate}>
-                <Text>This is empty date!</Text>
+                <Text>All done!</Text>
             </View>
         );
     }
@@ -87,14 +56,29 @@ const Calendar = () => {
         return date.toISOString().split('T')[0];
     }
 
+    const getEventsPerDay = (day) => {
+        getEvents(day.dateString).subscribe((event) => {
+            if (Object.keys(event).length > 0) {
+                setEvents(event)
+            } else {
+                const date = day.dateString
+                const emptyMessage = {
+                    [date]: {
+                        name: "All done"
+                    }
+                }
+                setEvents(emptyMessage)
+            }
+        })
+    }
 
     return (
         <View style={styles.container}>
             <Agenda
+                onDayPress={getEventsPerDay}
                 testID={TEST_ID}
                 items={events}
-                // loadItemsForMonth={loadItems}
-                selected={'2022-07-31'}
+                selected={timeToString(today)}
                 renderItem={renderItem}
                 renderEmptyDate={renderEmptyDate}
                 rowHasChanged={rowHasChanged}
@@ -143,9 +127,14 @@ const styles = StyleSheet.create({
         marginTop: 17
     },
     emptyDate: {
+        flexDirection: "row",
+        flex:1,
         height: 15,
-        flex: 1,
-        paddingTop: 30
+        paddingTop: 30,
+        alignItems:"center"
+    },
+    periodText: {
+        color: "gray"
     }
 })
 
