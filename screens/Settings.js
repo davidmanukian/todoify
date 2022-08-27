@@ -28,7 +28,7 @@ const sectionModalHeight = SCREEN_HEIGHT * 75 / 100;
 
 const Settings = () => {
     const {signOut} = useAuth();
-    const {getItem, storeItem} = useStorage();
+    const {getItem, storeItem, clearItems} = useStorage();
     const [sections, setSections] = useState([]);
     const [sectionName, setSectionName] = useState('');
 
@@ -47,6 +47,10 @@ const Settings = () => {
     const handleDelete = () => {
         setAddSectionPressed(false);
     };
+
+    const clearAl = () => {
+        clearItems().subscribe()
+    }
 
     const saveNewSection = () => {
         let newItem = {
@@ -119,7 +123,7 @@ const Settings = () => {
                                             display: 'flex'
                                         }}>{data.item.text}
                                     </Text>
-                                    {data.item.isSelected &&  <FontAwesome5.Button size='15'
+                                    {data.item.isSelected &&  <FontAwesome5.Button size={15}
                                                           backgroundColor='transparent'
                                                           color={"#065a60"}
                                                           iconStyle={{
@@ -152,6 +156,7 @@ const Settings = () => {
                     />
                 </Section>
             </TableView>
+            <Button title={"ClearAll"} onPress={clearAl}/>
 
             {addASectionPressed &&
                 <KeyboardAvoidingView style={[styles.keyboardAvoidingViewStyle]}

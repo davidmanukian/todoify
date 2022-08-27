@@ -3,7 +3,7 @@ import app_constants from "../app_constants";
 import {useEffect, useRef, useState} from "react";
 import HomeListModal from "../components/home/HomeListModal";
 import HomeCalendarModal from "../components/home/HomeCalendarModal";
-import {COLLECTION_TASKS} from '../constant_storage';
+import {COLLECTION_TASKS, COLLECTION_SECTIONS} from '../constant_storage';
 import {useStorage} from '../hooks/storage';
 import {groupBy, map} from "lodash";
 import uuid from 'react-native-uuid'
@@ -23,7 +23,7 @@ const calendarModalHeight = SCREEN_HEIGHT * 70 / 100;
 const Home = ({navigation}) => {
     const datePickerRef = useRef(null);
 
-    const {getItem, getAllItems, multiGetItems, removeItem, clearItems, storeItem} = useStorage()
+    const {getItemRaw, getAllItems, multiGetItems, removeItem, clearItems, storeItemRaw} = useStorage()
 
     const [addATaskPressed, setAddATaskPressed] = useState(false)
 
@@ -37,17 +37,37 @@ const Home = ({navigation}) => {
     const [datePickerOpened, setDatePickerOpened] = useState(false);
     const [datePickerValue, setDatePickerValue] = useState(null);
 
-    const [sections, setSections] = useState(['Section 1', 'Section 2'])
+    const [sections, setSections] = useState([])
 
     const [tasksGroupBySection, setTasksGroupBySection] = useState([])
 
     useEffect(() => {
-        // getItem(COLLECTION_SECTIONS).
-        //     subscribe(e => {
-        //         setSections(e)
-        // })
+        navigation.addListener('focus', () => {
+            fetchTasks()
+        })
+    }, [navigation])
+
+    useEffect(() => {
         fetchTasks()
     }, [])
+
+    useEffect(() => {
+        navigation.addListener('focus', () => {
+            fetchSections();
+        })
+        fetchSections();
+    }, [])
+
+    const fetchSections = () => {
+        getItemRaw(COLLECTION_SECTIONS)
+            .subscribe(data => {
+                if (data) {
+                    const parsedSections = JSON.parse(data)
+                    const sections = parsedSections.map(data => data.name)
+                    setSections(sections)
+                }
+            })
+    }
 
 
     const fetchTasks = () => {
@@ -97,7 +117,7 @@ const Home = ({navigation}) => {
             }
 
             try {
-                storeItem(COLLECTION_TASKS + ":" + task.id, JSON.stringify(task))
+                storeItemRaw(COLLECTION_TASKS + ":" + task.id, JSON.stringify(task))
                 dismissTask()
                 Alert.alert("New task was added successfully")
                 fetchTasks()
@@ -133,11 +153,12 @@ const Home = ({navigation}) => {
     const changeTaskStatus = (item, status) => {
         console.log("Clicked ", status)
         const path = COLLECTION_TASKS + ":" + item.id;
-        getItem(path)
+        getItemRaw(path)
             .subscribe(
                 task => {
-                    task.status = status
-                    storeItem(path, JSON.stringify(task))
+                    const parsedTask = JSON.parse(task)
+                    parsedTask.status = status
+                    storeItemRaw(path, JSON.stringify(parsedTask))
                     fetchTasks()
                 }
             )
@@ -157,6 +178,7 @@ const Home = ({navigation}) => {
                     setTaskValue={(e) => setTaskValue(e)}
                     openList={() => openList()}
                     listValue={listValue}
+                    disabled={sections.length === 0}
                     setListValue={(e) => setListValue(e)}
                     openCalendar={() => openCalendar()}
 

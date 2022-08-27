@@ -34,7 +34,7 @@ const TaskInput = (props) => {
                     />
                 </View>
                 <View style={[{flexDirection: "row", flex: 1, paddingHorizontal: 20, alignItems: "center"}]}>
-                    <TouchableOpacity onPress={props.openList}>
+                    <TouchableOpacity onPress={props.openList} disabled={props.disabled}>
                         {props.listValue ?
                             <TodoBadge
                                 badgeStyle={{backgroundColor: grayishColor}}

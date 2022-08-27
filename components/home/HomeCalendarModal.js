@@ -43,7 +43,7 @@ const HomeCalendarModal = (props) => {
                     flexDirection: "row",
                     marginTop: 15,
                     justifyContent: "space-between"
-                }} onPress={() => props.addDueDate("Today")}>
+                }} onPress={() => props.addDueDate(today)}>
                     <View style={{
                         flexDirection: "row",
                         flex: 1
@@ -66,7 +66,7 @@ const HomeCalendarModal = (props) => {
                         marginTop: 15,
                         justifyContent: "space-between"
                     }}
-                    onPress={() => props.addDueDate("Tomorrow")}>
+                    onPress={() => props.addDueDate(tomorrow)}>
                     <View style={{
                         flexDirection: "row",
                         flex: 1

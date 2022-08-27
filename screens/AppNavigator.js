@@ -20,8 +20,10 @@ const paddingTop = Constants.statusBarHeight
 const InnerNavigator = () => {
     return (
         <Stack.Navigator>
-            <Stack.Screen name={routes.HOME} component={Home} options={{ headerShown: false }}/>
-            <Stack.Screen name={routes.DETAILS} component={Details}/>
+            <Stack.Screen name={routes.HOME_INNER} component={Home} options={{ headerShown: false }}/>
+            <Stack.Screen name={routes.DETAILS} component={Details} options={{title: '', headerStyle: {
+                backgroundColor: "transparent"
+                }}}/>
         </Stack.Navigator>
     )
 }
@@ -32,23 +34,23 @@ const AppNavigator = () => {
     const navigation = useNavigation();
 
 
-    useEffect(() => {
-        getItem('selectedTab').subscribe(t => {
-            if (t) {
-                console.log('t', t);
-                navigation.navigate(t);
-            }
-        })
-    }, [])
-    useEffect(() => {
-        const unsubscribe = navigation.addListener('state',
-            (e) => {
-                let index = e.data.state.index;
-                let screenName = e.data.state.routeNames[index];
-                storeItem('selectedTab', screenName);
-            });
-        return unsubscribe;
-    }, [navigation]);
+    // useEffect(() => {
+    //     getItem('selectedTab').subscribe(t => {
+    //         if (t) {
+    //             console.log('t', t);
+    //             navigation.navigate(t);
+    //         }
+    //     })
+    // }, [])
+    // useEffect(() => {
+    //     const unsubscribe = navigation.addListener('state',
+    //         (e) => {
+    //             let index = e.data.state.index;
+    //             let screenName = e.data.state.routeNames[index];
+    //             storeItem('selectedTab', screenName);
+    //         });
+    //     return unsubscribe;
+    // }, [navigation]);
     return (
         <Tab.Navigator style={[]}
                        screenOptions={
@@ -65,7 +67,6 @@ const AppNavigator = () => {
                             ),
                         }}
             />
-            {/*<CalendarProvider>*/}
             <Tab.Screen name={routes.CALENDAR}
                         component={Calendar}
                         options={{
@@ -76,8 +77,6 @@ const AppNavigator = () => {
                             ),
                         }}
             />
-            {/*</CalendarProvider>*/}
-
             <Tab.Screen name={routes.SETTINGS}
                         component={Settings}
                         options={{
