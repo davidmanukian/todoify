@@ -84,7 +84,7 @@ const CalendarProvider = ({children}) => {
                         })
                         return obj;
                     })
-                ) : of("No Events")
+                ) : of(signOut())
             })
         )
     }
