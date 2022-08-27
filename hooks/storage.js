@@ -20,6 +20,10 @@ const StorageProvider = ({children}) => {
             );
     }
 
+    const getItemRaw = (key) => {
+        return from(AsyncStorage.getItem(key))
+    }
+
     const getAllItems = () => {
         return from(AsyncStorage.getAllKeys())
     }
@@ -31,6 +35,10 @@ const StorageProvider = ({children}) => {
     const clearItems = () => {
         return from(AsyncStorage.clear())
     }
+
+    const storeItemRaw = (key, data) => {
+        return from(AsyncStorage.setItem(key, data)).subscribe()
+    };
 
     const storeItem = (key, data) => {
         return from(AsyncStorage.setItem(
@@ -52,10 +60,12 @@ const StorageProvider = ({children}) => {
         <StorageContext.Provider
             value={{
                 getItem,
+                getItemRaw,
                 getAllItems,
                 multiGetItems,
                 clearItems,
                 storeItem,
+                storeItemRaw,
                 removeItem
             }}
         >
