@@ -9,6 +9,7 @@ import {useStorage} from "../hooks/storage";
 import {COLLECTION_SECTIONS, COLLECTION_TASKS} from "../constant_storage";
 import HomeCalendarModal from "../components/home/HomeCalendarModal";
 import app_constants from "../app_constants";
+import dayjs from "dayjs";
 
 const {
     width: SCREEN_WIDTH,
@@ -54,8 +55,13 @@ const Details = (props) => {
         storeItemRaw(COLLECTION_TASKS + ":" + data.id, JSON.stringify(upsert))
     }, [dueDateValue, datePickerValue])
 
+    // const formatDueDate = () => {
+    //     return `Due ${datePickerValue ? new Date(datePickerValue).toDateString() : new Date(data.dueDate).toDateString()}`
+    // }
+
     const formatDueDate = () => {
-        return `Due ${datePickerValue ? new Date(datePickerValue).toDateString() : new Date(data.dueDate).toDateString()}`
+        return `Due ${datePickerValue ?  dayjs(datePickerValue).format("MMM D, YYYY") :
+            dayjs(data.dueDate).format("MMM D, YYYY")}`
     }
 
     const dueDatePressed = () => {

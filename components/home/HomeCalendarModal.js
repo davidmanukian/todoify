@@ -3,12 +3,15 @@ import {Text, TouchableOpacity, View} from "react-native";
 import {AntDesign, MaterialCommunityIcons} from "@expo/vector-icons";
 import {useEffect} from "react";
 import {DatePicker} from "react-native-woodpicker";
+import dayjs from "dayjs";
 
 
 const HomeCalendarModal = (props) => {
-    const today = new Date();
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
+    const todayDayJs = dayjs()
+    const formattedToday = todayDayJs.format("ddd")
+
+    const tomorrowDayJs = dayjs().add(1, "days")
+    const formattedTomorrow =  tomorrowDayJs.format("ddd")
 
     const openDatePicker = () => {
         props.setDatePickerOpened(true)
@@ -43,7 +46,7 @@ const HomeCalendarModal = (props) => {
                     flexDirection: "row",
                     marginTop: 15,
                     justifyContent: "space-between"
-                }} onPress={() => props.addDueDate(today)}>
+                }} onPress={() => props.addDueDate(todayDayJs)}>
                     <View style={{
                         flexDirection: "row",
                         flex: 1
@@ -55,7 +58,7 @@ const HomeCalendarModal = (props) => {
                     </View>
                     <View>
                         <Text>
-                            {today.toLocaleString('en-us', {weekday: 'short'})}
+                            {formattedToday.toString()}
                         </Text>
                     </View>
                 </TouchableOpacity>
@@ -66,7 +69,7 @@ const HomeCalendarModal = (props) => {
                         marginTop: 15,
                         justifyContent: "space-between"
                     }}
-                    onPress={() => props.addDueDate(tomorrow)}>
+                    onPress={() => props.addDueDate(tomorrowDayJs)}>
                     <View style={{
                         flexDirection: "row",
                         flex: 1
@@ -78,7 +81,7 @@ const HomeCalendarModal = (props) => {
                     </View>
                     <View>
                         <Text>
-                            {tomorrow.toLocaleString('en-us', {weekday: 'short'})}
+                            {formattedTomorrow.toString()}
                         </Text>
                     </View>
                 </TouchableOpacity>
@@ -111,6 +114,8 @@ const HomeCalendarModal = (props) => {
                         title="Select Due Date"
                         isNullable={false}
                         iosDisplay="inline"
+                        androidDisplay="default"
+                        androidMode="calendar"
                     />
                     }
                 </TouchableOpacity>

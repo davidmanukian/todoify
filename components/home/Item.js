@@ -1,21 +1,32 @@
 import {StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {AntDesign, Entypo} from "@expo/vector-icons";
 import {grayishColor, mainBackgroundColor, whitenColor} from "../../colors";
+import dayjs from "dayjs";
+import isToday from "dayjs/plugin/isToday"
+import isTomorrow from "dayjs/plugin/isTomorrow"
+import isYesterday from "dayjs/plugin/isYesterday"
 
 const Item = (props) => {
+    dayjs.extend(isToday)
+    dayjs.extend(isTomorrow)
+    dayjs.extend(isYesterday)
+
     const iconSize = 24;
     const formatDueDate = () => {
-        const date = new Date(props.data.dueDate)
-        const today = new Date()
-        if (today.toDateString() === date.toDateString()){
+        const date = dayjs(props.data.dueDate)
+        if (date.isToday()){
             return "Today"
         }
-        today.setDate(today.getDate() + 1)
-        if (today.toDateString() === date.toDateString()){
+
+        if (date.isTomorrow()){
             return "Tomorrow"
         }
 
-        return date.toDateString()
+        if (date.isYesterday()){
+            return "Yesterday"
+        }
+
+        return date.format("MMM D, YYYY")
     }
     return (
         <View style={[styles.container]}>

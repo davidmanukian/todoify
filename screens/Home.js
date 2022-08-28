@@ -142,13 +142,11 @@ const Home = ({navigation}) => {
     }
 
     const addList = (value) => {
-        console.log(value);
         setListValue(value)
         setListModalVisible(false)
     }
 
     const addDueDate = (value) => {
-        console.log(value);
         setDatePickerValue(value)
         setDueDateValue(value)
         setDatePickerOpened(false)

@@ -3,18 +3,12 @@ import {Entypo, Feather} from "@expo/vector-icons";
 import {grayishColor, mainBackgroundColor, whitenColor} from "../../colors";
 import TodoBadge from "../../ui/badge";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome";
+import dayjs from "dayjs";
 
 const TaskInput = (props) => {
 
     const dueDateFormatted = () => {
-        if (typeof props.datePickerValue === 'string') {
-            return props.datePickerValue
-        }
-        const weekday = props.datePickerValue.toLocaleString('en-us', {weekday: 'short'})
-        const day = props.datePickerValue.toLocaleString('en-us', {day: "2-digit"})
-        const month = props.datePickerValue.toLocaleString('en-us', {month: 'short'})
-
-        return `${weekday}, ${day} ${month}`
+        return dayjs(props.datePickerValue).format("MMM D, YYYY")
 
     }
 
