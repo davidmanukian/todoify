@@ -16,7 +16,6 @@ const Login = () => {
 
     return (
         <ImageBackground source={require("../assets/login.jpg")} style={styles.container}>
-            <Text>Hello user!</Text>
             <FontAwesome5.Button name="google" onPress={doSignIn}>
                 Sign in with Google
             </FontAwesome5.Button>
