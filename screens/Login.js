@@ -1,7 +1,10 @@
-import {Alert, Button, ImageBackground, StatusBar, StyleSheet, Text, View} from 'react-native';
+import {Alert, ImageBackground, StyleSheet} from 'react-native';
 import {useAuth} from "../hooks/auth";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome";
 
+/**
+ * Login page that allows us to sign in only with Google.
+ * */
 const Login = () => {
 
     const {signIn} = useAuth()

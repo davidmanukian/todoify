@@ -4,9 +4,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const StorageContext = createContext({});
 
-
+/**
+ * Storage provide/context
+ * */
 const StorageProvider = ({children}) => {
 
+    //method for getting item from async storage. Used many places in different screens.
+    //some RXJS since AsyncStorage allows us to store only String and that's why sometimes I need to parse it back to
+    //object JSON.parse()..
     const getItem = (key) => {
         return from(AsyncStorage.getItem(key))
             .pipe(

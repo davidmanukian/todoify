@@ -1,12 +1,15 @@
-import {SectionList, TouchableWithoutFeedback, View} from "react-native";
+import {SectionList, StyleSheet, TouchableWithoutFeedback, View} from "react-native";
 import Item from "./Item";
 import SectionLabel from "./SectionLabel";
+import {mainBackgroundColor, whitenColor} from "../../colors";
 
-
+/**
+ * TaskView is a wrapper for React SectionList component.
+ * It renders all sections and tasks related to each section.
+ * */
 const TaskView = (props) => {
-
     return (
-        <View style={[{flexDirection: "row", flex: 1, marginTop: 50}]}>
+        <View style={styles.container}>
             <TouchableWithoutFeedback onPress={props.dismissTask}>
                 <SectionList sections={props.tasksGroupBySection}
                              keyExtractor={(item, index) => item.id}
@@ -23,5 +26,13 @@ const TaskView = (props) => {
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flexDirection: "row",
+        flex: 1,
+        marginTop: 50
+    }
+})
 
 export default TaskView

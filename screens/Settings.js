@@ -24,8 +24,10 @@ const {
     height: SCREEN_HEIGHT,
 } = Dimensions.get('window');
 
-const sectionModalHeight = SCREEN_HEIGHT * 75 / 100;
 
+/**
+ * Settings page where we can create, delete, activate sections as well as sign out if we need it.
+ * */
 const Settings = () => {
     const {signOut} = useAuth();
     const {getItem, storeItem, clearItems} = useStorage();
@@ -34,6 +36,7 @@ const Settings = () => {
 
     const [addASectionPressed, setAddSectionPressed] = useState(false)
 
+    //fetch all sections to render
     useEffect(() => {
         getItem(COLLECTION_SECTIONS).subscribe((sections) => {
             if (sections && sections.length > 0 && sections !== '[]') {
@@ -43,6 +46,7 @@ const Settings = () => {
     }, []);
 
 
+    //change useState values
     const showDialog = () => {
         setAddSectionPressed(true);
         setAddSectionPressed(true);
@@ -60,6 +64,7 @@ const Settings = () => {
         clearItems().subscribe()
     }
 
+    //when we add new section by default it's not selected/activated.
     const saveNewSection = () => {
         let newItem = {
             name: sectionName,
@@ -70,6 +75,7 @@ const Settings = () => {
         setSectionName('');
     }
 
+    //if we want to delete a section by swiping left.
     const deleteSection = (index) => {
         const indexToDelete = Number(index);
         let newArr = [...sections.filter((c, innerI) => Number(innerI) !== indexToDelete)];
@@ -81,6 +87,7 @@ const Settings = () => {
         setSections(list);
     }
 
+    //when we click on a section it'll be selected/activated.
     const changeAvailability = (index) => {
         const sectionsToUpdate = [...sections];
         console.log('sectionsToUpdate[index]', index, sectionsToUpdate);

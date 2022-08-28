@@ -6,12 +6,19 @@ import isToday from "dayjs/plugin/isToday"
 import isTomorrow from "dayjs/plugin/isTomorrow"
 import isYesterday from "dayjs/plugin/isYesterday"
 
+/**
+ * Task item that is rendered in Home screen.
+ * I did this as a separate component for convenient usage.
+ * */
 const Item = (props) => {
+    //extending dayjs by features like to check current day is today/tomorrow/yesterday
     dayjs.extend(isToday)
     dayjs.extend(isTomorrow)
     dayjs.extend(isYesterday)
 
     const iconSize = 24;
+
+    //formatting date to render Today/Tomorrow/Yesterday instead of date. However, the date will be rendered
     const formatDueDate = () => {
         const date = dayjs(props.data.dueDate)
         if (date.isToday()){
@@ -29,8 +36,8 @@ const Item = (props) => {
         return date.format("MMM D, YYYY")
     }
     return (
-        <View style={[styles.container]}>
-            <View style={[styles.taskStatusContainer]}>
+        <View style={styles.container}>
+            <View style={styles.taskStatusContainer}>
                 {props.data.status === 'started' ?
                     <Entypo name="circle" onPress={() => props.changeTaskStatus(props.data, 'completed')}
                             size={iconSize}
@@ -44,13 +51,13 @@ const Item = (props) => {
             </View>
             <TouchableOpacity onPress={() => props.navigation.navigate('Details', {
                 data: props.data
-            })} style={[styles.detailsContainer]}>
-                <View style={[styles.detailsView]}>
+            })} style={styles.detailsContainer}>
+                <View style={styles.detailsView}>
                     <Text style={[props.data.status === 'completed' && styles.taskCompleted, styles.taskText]}>
                         {props.data.task}
                     </Text>
-                    <View style={[styles.dueDateView]}>
-                        <Text style={[styles.dueDateText]}>
+                    <View style={styles.dueDateView}>
+                        <Text style={styles.dueDateText}>
                             {formatDueDate() !== "Invalid Date" ? formatDueDate() : "Today"}
                         </Text>
                     </View>

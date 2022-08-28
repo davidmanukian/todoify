@@ -9,11 +9,14 @@ const {
 
 const addATaskWidth = SCREEN_WIDTH - 30;
 
+/**
+ * 'Add Button' as a component
+ * */
 const TaskAddButton = (props) => {
     return (
-        <View style={[styles.addATaskContainerStyle]}>
+        <View style={styles.addATaskContainerStyle}>
             <FontAwesome5.Button name="plus"
-                                 style={[styles.addTaskStyle]}
+                                 style={styles.addTaskStyle}
                                  onPress={props.showTaskModal}>
                 <Text style={{fontSize: 16, color: whitenColor}}>Add a Task</Text>
             </FontAwesome5.Button>

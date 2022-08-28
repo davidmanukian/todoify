@@ -4,53 +4,37 @@ import routes from "../constant_routes";
 import Home from "./Home";
 import Settings from './Settings'
 import Calendar from "./Calendar";
-import Constants from 'expo-constants';
 import {StyleSheet,} from "react-native";
-import {useStorage} from '../hooks/storage';
-import {useEffect, useState} from 'react';
-import {useNavigation} from '@react-navigation/native';
 import Details from "./Details";
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
-const paddingTop = Constants.statusBarHeight
-
+/**
+ * This is inner navigator that allows us to navigate from main Home page to Details (Todos-detail) page.
+ * It's integrated in bottom-navigation like navigation inside another navigation.
+ * */
 const InnerNavigator = () => {
+    //here I'm using only two screens and navigate between them.
     return (
         <Stack.Navigator>
-            <Stack.Screen name={routes.HOME_INNER} component={Home} options={{ headerShown: false }}/>
-            <Stack.Screen name={routes.DETAILS} component={Details} options={{title: '', headerStyle: {
-                backgroundColor: "transparent"
-                }}}/>
+            <Stack.Screen name={routes.HOME_INNER} component={Home} options={{headerShown: false}}/>
+            <Stack.Screen name={routes.DETAILS} component={Details} options={{
+                title: '', headerStyle: {
+                    backgroundColor: "transparent"
+                }
+            }}/>
         </Stack.Navigator>
     )
 }
 
+/**
+ * AppNavigator is main bottom navigation is responsible for navigation between main screens
+ * (HOME, CALENDAR, SETTINGS).
+ * */
 const AppNavigator = () => {
-    const {selectedTab, setSelectedTab} = useState();
-    const {getItem, storeItem} = useStorage();
-    const navigation = useNavigation();
 
-
-    // useEffect(() => {
-    //     getItem('selectedTab').subscribe(t => {
-    //         if (t) {
-    //             console.log('t', t);
-    //             navigation.navigate(t);
-    //         }
-    //     })
-    // }, [])
-    // useEffect(() => {
-    //     const unsubscribe = navigation.addListener('state',
-    //         (e) => {
-    //             let index = e.data.state.index;
-    //             let screenName = e.data.state.routeNames[index];
-    //             storeItem('selectedTab', screenName);
-    //         });
-    //     return unsubscribe;
-    // }, [navigation]);
     return (
         <Tab.Navigator style={[]}
                        screenOptions={

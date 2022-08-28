@@ -1,3 +1,4 @@
+//useful constants for calendar
 export default Object.freeze({
     create_url: function (calendarId) {
         return `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events`

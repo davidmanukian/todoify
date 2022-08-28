@@ -8,7 +8,6 @@ import HomeListModal from "../components/home/HomeListModal";
 import {useStorage} from "../hooks/storage";
 import {COLLECTION_SECTIONS, COLLECTION_TASKS} from "../constant_storage";
 import HomeCalendarModal from "../components/home/HomeCalendarModal";
-import app_constants from "../app_constants";
 import dayjs from "dayjs";
 
 const {
@@ -16,12 +15,20 @@ const {
     height: SCREEN_HEIGHT,
 } = Dimensions.get('window');
 
+//my custom modal can be any height you desire that's why I'm using such constants
 const modalHeight = SCREEN_HEIGHT * 10 / 100
 const calendarModalHeight = SCREEN_HEIGHT * 70 / 100;
 
+
+/**
+ * This screen is responsible for showing details of Todos.
+ * You can navigate to this screen when you're Home page and click at any Tod
+ * */
 const Details = (props) => {
+    //fetching navigation params (data) from Home page.
     const {data} = props.route.params
 
+    //using storage (async storage) context.
     const {getItemRaw, removeItem, storeItemRaw} = useStorage()
 
     const datePickerRef = useRef(null);
@@ -35,6 +42,9 @@ const Details = (props) => {
 
     const [sections, setSections] = useState([])
 
+    /**
+     * fetching all sections that were created in Settings page when page is loaded.
+     * */
     useEffect(() => {
         getItemRaw(COLLECTION_SECTIONS)
             .subscribe(e => {
@@ -44,6 +54,9 @@ const Details = (props) => {
             })
     }, [])
 
+    /**
+     * When we change date in 'due modal' we need to UPSERT our task.
+     * */
     useEffect(() => {
         const upsert = {
             id: data.id,
@@ -55,12 +68,9 @@ const Details = (props) => {
         storeItemRaw(COLLECTION_TASKS + ":" + data.id, JSON.stringify(upsert))
     }, [dueDateValue, datePickerValue])
 
-    // const formatDueDate = () => {
-    //     return `Due ${datePickerValue ? new Date(datePickerValue).toDateString() : new Date(data.dueDate).toDateString()}`
-    // }
-
+    //convenient way of rendering data
     const formatDueDate = () => {
-        return `Due ${datePickerValue ?  dayjs(datePickerValue).format("MMM D, YYYY") :
+        return `Due ${datePickerValue ? dayjs(datePickerValue).format("MMM D, YYYY") :
             dayjs(data.dueDate).format("MMM D, YYYY")}`
     }
 
@@ -72,12 +82,14 @@ const Details = (props) => {
         setSectionVisible(true)
     }
 
+    //add list method that is used to store a list
     const addList = (e) => {
         data.list = e
         storeItemRaw(COLLECTION_TASKS + ":" + data.id, JSON.stringify(data))
         setSectionVisible(false)
     }
 
+    //dueDate handler for updating due date
     const addDueDate = (value) => {
         setDatePickerValue(value)
         setDueDateValue(value)
@@ -85,12 +97,17 @@ const Details = (props) => {
         setCalendarVisible(false)
     }
 
+    //when we remove task we have to redirect back to Home page with alert
     const removeTask = () => {
         removeItem(COLLECTION_TASKS + ":" + data.id)
         Alert.alert("Task was deleted")
         props.navigation.goBack()
     }
 
+    /**
+     * These are Cells of tableview.
+     * this is much convenient and best practice to use then hardcode in JSX.
+     * */
     const detailsCells = [
         {
             "title": "Due",
@@ -111,21 +128,24 @@ const Details = (props) => {
             "icon": <Ionicons name="notifications-outline" size={20}/>,
             "text": "Remind Me",
             "disabled": true,
-            "onPress": () => {}
+            "onPress": () => {
+            }
         },
         {
             "title": "Repeat",
             "icon": <Feather name="repeat" size={20}/>,
             "text": "Repeat",
             "disabled": true,
-            "onPress": () => {}
+            "onPress": () => {
+            }
         },
         {
             "title": "Add Note",
             "icon": <FontAwesome5 name="sticky-note" size={20}/>,
             "text": "Add Note",
             "disabled": true,
-            "onPress": () => {}
+            "onPress": () => {
+            }
         }
     ]
 

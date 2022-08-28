@@ -3,7 +3,7 @@ import app_constants from "../app_constants";
 import {useEffect, useRef, useState} from "react";
 import HomeListModal from "../components/home/HomeListModal";
 import HomeCalendarModal from "../components/home/HomeCalendarModal";
-import {COLLECTION_TASKS, COLLECTION_SECTIONS} from '../constant_storage';
+import {COLLECTION_SECTIONS, COLLECTION_TASKS} from '../constant_storage';
 import {useStorage} from '../hooks/storage';
 import {groupBy, map} from "lodash";
 import uuid from 'react-native-uuid'
@@ -17,13 +17,19 @@ const {
     height: SCREEN_HEIGHT,
 } = Dimensions.get('window');
 
+//my custom modal can be any height you desire that's why I'm using such constants
 const modalHeight = SCREEN_HEIGHT * 10 / 100
 const calendarModalHeight = SCREEN_HEIGHT * 70 / 100;
 
+/**
+ * Home page is main page what user sees when successfully signed in.
+ * Basically, we can create new tasks, complete and filter out them.
+ * */
 const Home = ({navigation}) => {
     const datePickerRef = useRef(null);
 
-    const {getItemRaw, getAllItems, multiGetItems, removeItem, clearItems, storeItemRaw} = useStorage()
+    //storage context API
+    const {getItemRaw, getAllItems, multiGetItems, storeItemRaw} = useStorage()
 
     const [addATaskPressed, setAddATaskPressed] = useState(false)
 
@@ -41,14 +47,19 @@ const Home = ({navigation}) => {
 
     const [tasksGroupBySection, setTasksGroupBySection] = useState([])
 
+    //ENUM sections that will be needed always during all lifecycle of app
     let enabledSections = ['No Section', 'Completed'];
 
+    /** this effect we need for catching 'navigation BACK' step. When a user click BACK arrow icon we need to catch this
+     * moment to update/refresh something. Below you'll see a lot of such listeners.
+     */
     useEffect(() => {
         navigation.addListener('focus', () => {
             enabledSections = ['No Section', 'Completed'];
         })
     }, [])
 
+    //the same as above, we add listener to re-fetch sections when user come back from another page.
     useEffect(() => {
         navigation.addListener('focus', () => {
             fetchSections();
@@ -56,16 +67,19 @@ const Home = ({navigation}) => {
         fetchSections();
     }, [])
 
+    //listener for re-fetching tasks.
     useEffect(() => {
         navigation.addListener('focus', () => {
             fetchTasks()
         })
     }, [navigation])
 
+    //load task when page is loaded first time.
     useEffect(() => {
         fetchTasks()
     }, [])
 
+    //method that allows us to get sections from AsyncStorage via Storage Context API.
     const fetchSections = () => {
         getItemRaw(COLLECTION_SECTIONS)
             .subscribe(data => {
@@ -83,6 +97,7 @@ const Home = ({navigation}) => {
     }
 
 
+    //get all tasks from AsyncStorage via Storage context. Group by sections (I used lodash here).
     const fetchTasks = () => {
         fetchSections();
         getAllItems()
@@ -111,6 +126,7 @@ const Home = ({navigation}) => {
         setAddATaskPressed(true)
     }
 
+    //when we click outside a task modal we need to close Keyboard and other modals as well.
     const dismissTask = () => {
         Keyboard.dismiss;
         setAddATaskPressed(false)
@@ -119,6 +135,7 @@ const Home = ({navigation}) => {
         setListValue(null)
     }
 
+    //adding task to AsyncStorage via Storage context API, also show alert and close all modals & keyboard.
     const addATask = () => {
         console.log(taskValue)
         if (taskValue !== null) {
@@ -161,9 +178,9 @@ const Home = ({navigation}) => {
         setCalendarModalVisible(true)
     }
 
-
+    //when we click on circle of a task we complete it. Also, we need to update our main page that's why I use
+    // fetchTasks()
     const changeTaskStatus = (item, status) => {
-        console.log("Clicked ", status)
         const path = COLLECTION_TASKS + ":" + item.id;
         getItemRaw(path)
             .subscribe(

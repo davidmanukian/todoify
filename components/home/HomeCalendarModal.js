@@ -5,11 +5,18 @@ import {useEffect} from "react";
 import {DatePicker} from "react-native-woodpicker";
 import dayjs from "dayjs";
 
-
+/**
+ * Calendar Modal component that is use in Home screen.
+ * This component is based my custom UI modal.
+ * */
 const HomeCalendarModal = (props) => {
+    //usage dayjs or similar to this library is crucial in hybrid development.
+    //since simple 'new Date()' works differently in android and ios. I'll mention it in my report.
     const todayDayJs = dayjs()
-    const formattedToday = todayDayJs.format("ddd")
 
+    //render today in the modal
+    const formattedToday = todayDayJs.format("ddd")
+    //render tomorrow in the modal
     const tomorrowDayJs = dayjs().add(1, "days")
     const formattedTomorrow =  tomorrowDayJs.format("ddd")
 

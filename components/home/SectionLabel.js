@@ -1,5 +1,8 @@
 import {Text} from "react-native";
 
+/**
+ * Created separated component for rendering sections
+ * */
 const SectionLabel = (props) => {
     return (
         <Text style={{

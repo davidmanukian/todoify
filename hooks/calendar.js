@@ -6,10 +6,14 @@ import calendarHelper from "../helpers/constant_calendar";
 
 export const CalendarContext = createContext({});
 
-
+/**
+ * Calendar provider/context for providing API between screens
+ * */
 const CalendarProvider = ({children}) => {
+    //using another context
     const {signOut, accessToken} = useAuth()
 
+    //prepare headers for Google Calendar request to fetch all events.
     const getHeaders = () => {
         return {
             headers: {
@@ -20,6 +24,8 @@ const CalendarProvider = ({children}) => {
         }
     }
 
+    //this method is for creating event. Unfortunately, I haven't implemented this part of app but in the next release
+    //I'm going to use it.
     const createEvent = () => {
         try {
             const event = {
@@ -53,9 +59,12 @@ const CalendarProvider = ({children}) => {
         }
     }
 
+    //for next release
     const updateEvent = async () => {
     }
 
+    //this method is responsible for getting all events from the primary calendar by day.
+    // You can notice here I'm using RXJS. I'm proud of it since I had never used it before.
     const getEvents = (date) => {
         return from(fetch(
             `https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=${date}T00:00:00Z&timeMax=${date}T23:59:00Z`,

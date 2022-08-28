@@ -1,3 +1,4 @@
+//expo-auth-session + google creds. Maybe it's better to refactor this to get from ENV instead of constants.
 export default Object.freeze({
     IOS_CLIENT_ID: "382648074525-3bh0jsq03ut910i367er4djqp2fm0iok.apps.googleusercontent.com",
     EXPO_CLIENT_ID: "382648074525-luus5lp62g7f13fjsq8h19poe2541ltr.apps.googleusercontent.com",

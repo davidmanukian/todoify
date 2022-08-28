@@ -7,11 +7,15 @@ import {useStorage} from './storage';
 
 export const AuthContext = createContext({});
 
-
+/**
+ * Auth Provider/Context is providing API related to sing in/sign out and manage all work related to access-token
+ * */
 const AuthProvider = ({children}) => {
     const [accessToken, setAccessToken] = useState();
+    //using another context to store access-token
     const {getItem, removeItem, storeItem} = useStorage();
 
+    //Expo-Auth-Session google provider
     const [request, response, promptAsync] = Google.useAuthRequest({
         iosClientId: auth_creds.IOS_CLIENT_ID,
         expoClientId: auth_creds.EXPO_CLIENT_ID,
@@ -19,7 +23,7 @@ const AuthProvider = ({children}) => {
         webClientId: auth_creds.WEB_CLIENT,
         scopes: auth_creds.SCOPES
     });
-
+    //if signed in successfully we need to store access-token in async-storage
     useEffect(() => {
         if (response?.type === 'success') {
             console.log('response', response);
@@ -34,6 +38,7 @@ const AuthProvider = ({children}) => {
         getItem(COLLECTION_AUTH_TOKEN).subscribe(t => setAccessToken(t));
     }, []);
 
+    //sign in EXPO-AUTH-SESSION
     const signIn = async () => {
         try {
             await promptAsync({showInRecents: true})
@@ -42,6 +47,7 @@ const AuthProvider = ({children}) => {
         }
     }
 
+    //sign out EXPO-AUTH-SESSION
     const signOut = async () => {
         setAccessToken(null);
         removeItem(COLLECTION_AUTH_TOKEN);

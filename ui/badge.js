@@ -2,9 +2,12 @@ import {SafeAreaView, Text, View} from "react-native";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome";
 import {Badge} from "react-native-paper";
 
-
+/**
+ * This is my custom UI that related to Badge.
+ * It's used in modals, for example when you want to add a task, selection of a section & due date will be rendered in
+ * this badge.
+ * */
 const TodoBadge = (props) => {
-    console.log(props.data)
     return (
         <Badge size={props.badgeSize} style={[props.badgeStyle]}>
             {/*<View style={{*/}

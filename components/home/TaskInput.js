@@ -5,29 +5,31 @@ import TodoBadge from "../../ui/badge";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome";
 import dayjs from "dayjs";
 
+/**
+ * TaskInput is area for creating task. It's an Input + Icons (section, calendar) or it's Badges.
+ * */
 const TaskInput = (props) => {
 
     const dueDateFormatted = () => {
         return dayjs(props.datePickerValue).format("MMM D, YYYY")
-
     }
 
     return (
-        <KeyboardAvoidingView style={[styles.keyboardAvoidingViewStyle]}
+        <KeyboardAvoidingView style={styles.keyboardAvoidingViewStyle}
                               behavior={Platform.OS === "ios" ? "padding" : "height"}>
-            <View style={[styles.addATaskModalContainer]}>
-                <View style={[{flexDirection: "row", flex: 1, paddingHorizontal: 20, alignItems: "center"}]}>
-                    <Entypo name="circle" size={20} color={grayishColor} style={[{paddingRight: 10}]}/>
+            <View style={styles.addATaskModalContainer}>
+                <View style={styles.textInputStyle}>
+                    <Entypo name="circle" size={20} color={grayishColor} style={{paddingRight: 10}}/>
                     <TextInput
                         placeholder={"Add a Task"}
                         placeholderTextColor={grayishColor}
                         selectionColor={grayishColor}
-                        style={[styles.addTaskTextInputStyle]}
+                        style={styles.addTaskTextInputStyle}
                         autoFocus={true}
                         onChangeText={task => props.setTaskValue(task)}
                     />
                 </View>
-                <View style={[{flexDirection: "row", flex: 1, paddingHorizontal: 20, alignItems: "center"}]}>
+                <View style={styles.textInputStyle}>
                     <TouchableOpacity onPress={props.openList} disabled={props.disabled}>
                         {props.listValue ?
                             <TodoBadge
@@ -45,7 +47,7 @@ const TaskInput = (props) => {
                             :
                             <Feather name="list" size={20} color={grayishColor}/>}
                     </TouchableOpacity>
-                    <TouchableOpacity style={[props.datePickerValue ? styles.badgeMargin : styles.noBadgeMargin]}
+                    <TouchableOpacity style={props.datePickerValue ? styles.badgeMargin : styles.noBadgeMargin}
                                       onPress={props.openCalendar}>
                         {props.datePickerValue ?
                             <TodoBadge
@@ -99,4 +101,10 @@ const styles = StyleSheet.create({
         color: whitenColor,
         fontSize: 16
     },
+    textInputStyle: {
+        flexDirection: "row",
+        flex: 1,
+        paddingHorizontal: 20,
+        alignItems: "center"
+    }
 })

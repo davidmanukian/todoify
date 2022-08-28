@@ -1,6 +1,10 @@
 import Modal from "react-native-modal";
 import {View} from "react-native";
 
+/**
+ * This is my custom Modal that is widely used in different Components & Screens
+ * We can adjust it via props which I think is very useful.
+ * */
 const TodoModal = (props) => {
     const modalHeight = props.modalHeight
     return (

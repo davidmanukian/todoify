@@ -1,3 +1,4 @@
+//Async storage predefined collections for convenient usage.
 const DATABASE_NAME = '@todoify'
 
 const COLLECTION_AUTH_TOKEN = `${DATABASE_NAME}:auth-token`

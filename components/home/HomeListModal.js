@@ -1,7 +1,11 @@
 import {Button, Text, TouchableOpacity, View} from "react-native";
 import TodoModal from "../../ui/modal";
 
-
+/**
+ * List Modal component that is use in Home screen.
+ * This component is based my custom UI modal.
+ * All data is passing through props
+ * */
 const HomeListModal = (props) => {
 
     return (

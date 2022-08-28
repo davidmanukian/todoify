@@ -1,19 +1,24 @@
-import {Alert, ImageBackground, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Alert, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Agenda} from 'react-native-calendars';
 import {useEffect, useState} from 'react';
 import {useCalendar} from '../hooks/calendar';
 import app_constants from "../app_constants";
 import dayjs from "dayjs";
 
-
+//
 const TEST_ID = 'test-calendar'
 
+/**
+ * Calendar screen (used inside bottom navigation) allows us to see our Google Calendar events
+ * */
 const Calendar = () => {
+    //using calendar context
     const {getEvents} = useCalendar()
     const [events, setEvents] = useState({});
 
     const today = new Date();
 
+    //here I'm trying to fetch TODAY's events from Google calendar when the page is first time loaded
     useEffect(() => {
         const date = {
             dateString: timeToString(new Date())
@@ -21,10 +26,14 @@ const Calendar = () => {
         getEventsPerDay(date)
     }, [])
 
+    /**
+     * This function is responsible for rendering events.
+     * */
     const renderItem = (reservation, isFirst) => {
         const fontSize = isFirst ? 16 : 14;
         const color = isFirst ? 'black' : '#43515c';
 
+        //start-end time of an event
         const period = dayjs(reservation.start).format("HH:mm") + "-" + dayjs(reservation.end).format("HH:mm")
 
         return (
@@ -39,6 +48,9 @@ const Calendar = () => {
         );
     }
 
+    /**
+     * this function renders when there is no created event for specific day.
+     * */
     const renderEmptyDate = () => {
         return (
             <View style={styles.emptyDate}>
@@ -51,11 +63,15 @@ const Calendar = () => {
         return r1.name !== r2.name;
     }
 
+    //util that allows us to convert Date to String
     const timeToString = (time) => {
         const date = new Date(time);
         return date.toISOString().split('T')[0];
     }
 
+    /**
+     * I'm using getEvents from calendar context, then I'm passing data to events state via setEvents for rendering.
+     * */
     const getEventsPerDay = (day) => {
         getEvents(day.dateString).subscribe((event) => {
             if (event !== "No Events" && Object.keys(event).length > 0) {
@@ -128,10 +144,10 @@ const styles = StyleSheet.create({
     },
     emptyDate: {
         flexDirection: "row",
-        flex:1,
+        flex: 1,
         height: 15,
         paddingTop: 30,
-        alignItems:"center"
+        alignItems: "center"
     },
     periodText: {
         color: "gray"
