@@ -2,7 +2,6 @@ import TodoModal from "../../ui/modal";
 import {Text, TouchableOpacity, View} from "react-native";
 import {AntDesign, MaterialCommunityIcons} from "@expo/vector-icons";
 import {useEffect} from "react";
-import {DatePicker} from "react-native-woodpicker";
 import dayjs from "dayjs";
 
 /**
@@ -91,40 +90,6 @@ const HomeCalendarModal = (props) => {
                             {formattedTomorrow.toString()}
                         </Text>
                     </View>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={{
-                    flexDirection: "row",
-                    marginTop: 15,
-                    justifyContent: "space-between"
-                }}
-                                  onPress={openDatePicker}
-                >
-                    <View style={{
-                        flexDirection: "row",
-                        flex: 1
-                    }}>
-                        <MaterialCommunityIcons name="calendar-blank" size={24} color="black"/>
-                        <Text style={{fontSize: 20}}>
-                            Pick a Date
-                        </Text>
-                    </View>
-                    <View>
-                        <AntDesign name="right" size={24} color="black"/>
-                    </View>
-                    { props.datePickerOpened &&
-                    <DatePicker
-                        style={{flex:1}}
-                        ref={props.datePickerRef}
-                        value={props.datePickerValue}
-                        onDateChange={(e) => props.addDueDate(e)}
-                        title="Select Due Date"
-                        isNullable={false}
-                        iosDisplay="inline"
-                        androidDisplay="default"
-                        androidMode="calendar"
-                    />
-                    }
                 </TouchableOpacity>
             </View>
         </TodoModal>
